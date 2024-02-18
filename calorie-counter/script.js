@@ -34,5 +34,15 @@ function isInvalidInput(str) {
     // if the regex have only 1 character to filter, then it no longer requires []
     // i flag stands for insensitive, meaning no matter the upper/lower case, it means the same
     // the regex will catch the e in-between any numeral inputs (e.g. 1e1, 2e9, 7e4)
-    const regex = /[0-9]e[0-9]/i;
+    // + after digits represents match a pattern that occurs one or more times
+    // [0-9] is the same as \d, \d flag represents digits
+    const regex = /\d+e\d+/i;
+    return str.match(regex);
+}
+
+function addEntry() {
+    // const targetId = '#' + entryDropdown.value;
+
+    // using template literal `` to include a var inside ${}
+    const targetInputContainer = document.querySelector(`#${entryDropdown.value} .input-container`);
 }
