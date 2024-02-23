@@ -3,7 +3,7 @@
 }
 
 body {
-    background-image: url('./src/bg_blur.jpg');
+    background-image: url('https://raw.githubusercontent.com/istamosh/js-algo-data-structures/master/palindrome-checker/src/bg_blur.jpg');
     background-size: cover;
 }
 #main {
