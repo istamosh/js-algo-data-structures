@@ -1,9 +1,10 @@
 :root {
-    --p-margin: 110px;
+    --p-margin: 112px;
 }
 
 body {
-    background-image: url('https://uselessetymology.files.wordpress.com/2019/10/palindrome-useless-etymology-12.png?w=1088');
+    background-image: url('./src/bg_blur.jpg');
+    background-size: cover;
 }
 #main {
     display: flex;
@@ -22,7 +23,11 @@ body {
 
     font-family: 'PT Serif';
 
-    background-color: white;
+    /* background-color: rgba(255, 255, 255, 0.596); */
+    color: white;
+    text-shadow: 1px 1px 5px black;
+
+    border: 2px dashed #17cbdb;
 }
 
 h1 {
@@ -66,18 +71,21 @@ button {
     width: 95%;
 }
 .true {
-    color: blue;
-    border: 1px solid blue;
+    border: 1px solid greenyellow;
+    background-color: rgba(172, 255, 47, 0.25);
 }
-.false {
-    color: red;
-    border: 1px solid red;
-}
+/* .false {
+
+} */
 
 p {
     position: absolute;
     bottom: 0;
     margin: 0;
+    padding: 0 5px;
 
     text-align: justify;
+
+    border: 1px solid turquoise;
+    background-color: rgba(64, 224, 208, 0.25);
 }
