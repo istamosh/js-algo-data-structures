@@ -3,10 +3,10 @@ const checkButton = document.getElementById('check-btn');
 const result = document.getElementById('result');
 
 // use two indexes iteration
-const test = char => {
+const checkPalindrome = input => {
     // remove symbols (including underscores) and whitespaces quantifier using regex, thanks to regexr.com
     const regex = /\W|\s+|_/g;
-    let processed = char.replace(regex, "").toLowerCase();
+    let processed = input.replace(regex, "").toLowerCase();
     // define the two indexes
     let forward = 0;
     let backward = processed.length -1;
@@ -24,6 +24,13 @@ const test = char => {
 
 // takes input, and detects if box is empty or using whitespace only
 checkButton.addEventListener('click', () => {
-    // result.innerHTML = test(textInput.value)
-    result.innerText = test(textInput.value);
+    // check for empty spaces without any characters and symbols on input
+    const regex = /^\s+$/g;
+    if (textInput.value == "" || textInput.value.match(regex)) {
+        alert("Please input a value");
+        return false;
+    }
+
+    if (checkPalindrome(textInput.value)) result.insertAdjacentHTML('afterbegin', `<span class="true">${textInput.value} is a palindrome</span>`);
+    else result.insertAdjacentHTML('afterbegin', `<span class="false">${textInput.value} is not a palindrome</span>`);
 });
