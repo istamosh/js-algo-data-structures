@@ -21,6 +21,32 @@ const checkPalindrome = input => {
     return true;
 };
 
+// alternate palindrome checker
+const check = userInput => {
+    if (userInput === '' || userInput.match(/^\s+$/gi)) {
+        alert('Please input a value');
+        return;
+    }
+
+    const input = userInput;
+
+    result.replaceChildren();
+
+    const processed = userInput.replace(/[^A-Za-z0-9]/gi, '').toLowerCase();
+    
+    let is = 
+    processed === [...processed].reverse().join('') ?
+        ['is', 'true'] : ['is not', 'false'];
+
+    let content = `${input} ${is[0]} a palindrome`;
+    
+    const span = document.createElement('span');
+    span.className = is[1];
+    span.innerHTML = content;
+
+    result.appendChild(span);
+};
+
 // execute input
 const execute = () => {
     // check for empty spaces without any characters and symbols on input
@@ -47,7 +73,17 @@ const clear = () => {
 };
 
 // takes input, and detects if box is empty or using whitespace only
-checkButton.addEventListener('click', execute);
+checkButton.addEventListener('click', () => {
+    check(textInput.value);
+    textInput.value = '';
+});
+// same as above but with enter key
+textInput.addEventListener('keypress', pressed => {
+    if (pressed.key === 'Enter') {
+        pressed.preventDefault();
+        checkButton.click();
+    }
+})
 
 // clear history
 clearButton.addEventListener('click', clear);

@@ -9,13 +9,21 @@
 
     <link href='https://fonts.googleapis.com/css?family=PT Serif' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Oxygen Mono' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=PT Sans' rel='stylesheet'>
 </head>
 <body>
     <div id="main">
         <h1>Palindrome Checker</h1>
 
         <div id="input-section">
-            <input type="text" id="text-input" spellcheck="false" required>
+            <input 
+            type="text" 
+            id="text-input" 
+            placeholder="Input here..." 
+            spellcheck="false" 
+            autocomplete="off"
+            required
+            >
             <button type="button" id="check-btn">Check</button>
             <button type="button" id="clear">Clear History</button>
         </div>
@@ -24,7 +32,7 @@
             
         </div>
 
-        <p>A palindrome is a word, number, phrase, or other sequence of symbols that reads the same backwards as forwards, such as madam or racecar, the date and time 12/21/33 12:21, and the sentence: "A man, a plan, a canal – Panama".</p>
+        <p id="info">A palindrome is a word, number, phrase, or other sequence of symbols that reads the same backwards as forwards, such as madam or racecar, the date and time 12/21/33 12:21, and the sentence: "A man, a plan, a canal – Panama".</p>
     </div>
 
     <script src="script.js"></script>

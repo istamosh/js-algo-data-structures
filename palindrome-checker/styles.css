@@ -8,7 +8,7 @@ body {
 }
 #main {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     flex-direction: column;
 
     /* center div horz/vert */
@@ -19,7 +19,7 @@ body {
     min-width: 400px;
     max-width: 33%;
 
-    max-height: 400px;
+    max-height: 300px;
 
     font-family: 'PT Serif';
 
@@ -33,23 +33,58 @@ body {
 h1 {
     text-align: center;
 
-    margin: 10px 0;
+    margin: 10px 0 0;
 }
 
 #input-section {
-    display: inherit;
-    justify-content: center;
+    text-align: center;
 }
+
 #text-input {
     margin: 10px 5px 10px 10px;
     width: 170px;
+
+    background: 0;
+    outline: none;
+}
+::placeholder {
+    color: white;
 }
 input[type="text"] {
     font-family: 'Oxygen Mono';
     font-size: 100%;
+    color: white;
+
+    border: none;
+    border-bottom: 2px solid white;
 }
+
 button {
-    font-family: 'Oxygen Mono';
+    background-color: rgba(47, 192, 178, 0.6);
+    border: 1px solid turquoise;
+    border-radius: 1rem;
+    box-sizing: border-box;
+    color: white;
+    cursor: pointer;
+    display: inline-block;
+    font-family: 'PT Sans';
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    text-decoration: none #0d172a solid;
+    text-decoration-thickness: auto;
+    transition: all .1s cubic-bezier(.4, 0, .2, 1);
+    box-shadow: 0px 1px 2px rgba(166, 175, 195, 0.25);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+
+    padding: 0.4rem;
+}
+button:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: rgba(47, 192, 178);
 }
 #check-btn {
     margin: 10px 5px;
@@ -59,15 +94,18 @@ button {
 }
 
 #result {
-    display: inherit;
-    flex-direction: column;
-    align-items: center;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+
+    height: 75px;
 
     overflow-y: auto;
-    margin-bottom: var(--p-margin);
+    /* margin-bottom: var(--p-margin); */
 }
 #result span {
     text-align: center;
+    margin: auto;
     width: 95%;
 }
 .true {
@@ -78,14 +116,18 @@ button {
 
 } */
 
-p {
-    position: absolute;
-    bottom: 0;
+#info {
+    /* position: absolute; */
+    /* hardcoded top var */
+    /* top: 138px; */
     margin: 0;
     padding: 0 5px;
 
     text-align: justify;
 
-    border: 1px solid turquoise;
-    background-color: rgba(64, 224, 208, 0.25);
+    border: 1px solid rgb(64, 187, 224);
+    background-color: rgba(67, 64, 224, 0.25);
+    
+    /* hardcoded height */
+    /* height: 110px; */
 }
