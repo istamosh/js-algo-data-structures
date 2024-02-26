@@ -186,7 +186,7 @@ const deleteSong = id => {
         resetButton.addEventListener('click', () => {
             userData.songs = [...allSongs];
 
-            renderSongs(userData?.songs);
+            renderSongs(sortSongs());
             setPlayButtonAccessibleText();
             resetButton.remove();
         });
@@ -292,12 +292,18 @@ audio.addEventListener('ended', () => {
 // sort them by the title using sort callback function
 // compare titles lexicographically (characters by characters from a-b, b-c, c-d, etc.)
 // return -1 means it will stays that way, just like 0 (A < B, John > Jack)
-userData?.songs.sort((a, b) => {
-    if (a.title < b.title) { return -1; }
-    if (a.title > b.title) { return 1; }
-    return 0;
-});
+// store them in a function
+const sortSongs = () => {
+    userData?.songs.sort((a, b) => {
+        if (a.title < b.title) { return -1; }
+        if (a.title > b.title) { return 1; }
+        return 0;
+    });
+
+    return userData?.songs;
+};
 
 // render listed songs in the playlist
-// using "?" after object variable call ignores null and undefined error inside the object properties
-renderSongs(userData?.songs);
+// see the songs in alphabetical order
+renderSongs(sortSongs());
+setPlayButtonAccessibleText();
