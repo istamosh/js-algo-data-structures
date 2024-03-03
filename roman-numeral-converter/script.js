@@ -3,8 +3,15 @@ const convertButton = document.getElementById('convert-btn');
 const outputDiv = document.getElementById('output');
 
 const check = () => {
-    if (inputBox.value === '') {
+    outputDiv.innerHTML = '';
+
+    if (!inputBox.value || 
+        isNaN(parseInt(inputBox.value)) || 
+        parseInt(inputBox.value) < 1 ||
+        parseInt(inputBox.value) > 3999
+        ) {
         alert('Please enter a valid number')
+        inputBox.value = '';
         return;
     }
 
@@ -49,7 +56,6 @@ const check = () => {
 
     span.appendChild(textNode)
 
-    outputDiv.innerHTML = '';
     outputDiv.appendChild(span)
 }
 
@@ -58,3 +64,8 @@ inputBox.addEventListener('keydown', e => {
     if (e.key === 'Enter') check();
     else return;
 })
+
+// prevent e +.-
+inputBox.addEventListener('keydown', e => 
+    ['e', 'E', '.', '+', '-'].includes(e.key) && e.preventDefault()
+)
