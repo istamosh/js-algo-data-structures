@@ -1,6 +1,6 @@
 :root {
-    --theme-light: rgb(219, 163, 128);
-    --theme-dark: rgb(133, 96, 69);
+    --theme-light: #dba380;
+    --theme-dark: #ce7f46;
 }
 
 body {
@@ -13,8 +13,11 @@ body {
     margin: 0 auto;
 }
 
-h2 {
+h1 {
     text-align: center;
+    color: var(--theme-dark);
+
+    font-family: 'Zilla Slab', 'Times New Roman', Times, serif;
 }
 
 #input-section, #output {
@@ -35,16 +38,26 @@ h2 {
 
     border: 1px solid #a2a9af;
 
-    /* transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out; */
+    transition: outline 75ms ease-in-out,
+    border 75ms ease-in-out,
+    border-radius 100ms ease-in-out,
+    background-color 200ms ease-in-out;
 }
 #number:focus {
-    outline: var(--theme-light) solid 2px;
+    outline: var(--theme-light) solid 3px;
 
     border: none;
+    border-radius: 15px;
+    background-color: #dba38033;
+}
+#number[type='number'] {
+    font-family: 'Bree Serif', 'Times New Roman', Times, serif;
+    font-size: 1.5rem;
+    color: #ad6028;
 }
 
 #convert-btn {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, system-ui;
+    font-family: 'Zilla Slab', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, system-ui;
 
     background-color: var(--theme-light);
     color: #fff;
@@ -55,20 +68,60 @@ h2 {
     width: 100%;
     max-width: 100px;
 
-    font-size: 1rem;   
+    font-size: 1.15rem;
+    
+    transition: transform 50ms ease-in-out,
+    background-color 50ms ease-in-out,
+    box-shadow 50ms ease-in-out;
+}
+#convert-btn:hover {
+    transform: translateY(-2px);
+    background-color: var(--theme-dark);
+    border-color: #b36731;
+
+    box-shadow: 0 2px 5px #999;
+}
+#convert-btn:active {
+    transform: translateY(0px);
+    background-color: var(--theme-dark);
+    border-color: #b36731;
+
+    box-shadow: 0 0 0 #999;
 }
 
 #number, #convert-btn {
     border-radius: .25rem;
 }
 
-#description::first-letter {
-    font-size: 1.99rem;
-    color: var(--theme-light);
-    /* makes it floating, so it's not shifting other texts */
-    float: left;
-    margin-right: .25rem;
+#output {
+    justify-content: center;
+    align-items: flex-end;
+    
+    font-family: 'Zilla Slab', 'Times New Roman', Times, serif;
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 80%;
+
+    text-align: center;
 }
+
 #description {
     text-align: left;
+
+    font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif;
+    font-weight: bolder;
+    font-size: 1.1rem;
+}
+#description::first-letter {
+    font-size: 1.99rem;
+    color: var(--theme-dark);
+    /* makes it floating, so it's not shifting other texts */
+    float: left;
+    margin-right: .5rem;
+}
+
+@media screen and (max-width: 300px) {
+    #output {
+        font-size: 20px;
+    }
 }

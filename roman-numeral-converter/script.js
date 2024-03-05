@@ -5,14 +5,17 @@ const outputDiv = document.getElementById('output');
 const check = () => {
     outputDiv.innerHTML = '';
 
-    if (!inputBox.value || 
-        isNaN(parseInt(inputBox.value)) || 
-        parseInt(inputBox.value) < 1 ||
-        parseInt(inputBox.value) > 3999
-        ) {
-        alert('Please enter a valid number')
+    if (!inputBox.value || isNaN(parseInt(inputBox.value))) {
+        outputDiv.innerHTML = '<span>Please enter a valid number</span>';
         inputBox.value = '';
-        return;
+    }
+    else if (parseInt(inputBox.value) < 1) {
+        outputDiv.innerHTML = '<span>Please enter a number greater than or equal to 1</span>';
+        inputBox.value = '';
+    }
+    else if (parseInt(inputBox.value) > 3999) {
+        outputDiv.innerHTML = '<span>Please enter a number less than or equal to 3999</span>';
+        inputBox.value = '';
     }
 
     let input = inputBox.value;
@@ -65,7 +68,7 @@ inputBox.addEventListener('keydown', e => {
     else return;
 })
 
-// prevent e +.-
+// prevent e + .
 inputBox.addEventListener('keydown', e => 
-    ['e', 'E', '.', '+', '-'].includes(e.key) && e.preventDefault()
+    ['e', 'E', '.', '+'].includes(e.key) && e.preventDefault()
 )
