@@ -11,7 +11,8 @@
     <h1>Statistics Calculator</h1>
     <p>Enter a list of comma-separated numbers.</p>
 
-    <form onsubmit="calculate();">
+    <!-- when submit is triggered, calc. will triggered but page is refreshed, return false to prevent page from refreshing -->
+    <form onsubmit="calculate(); return false;">
       <label for="numbers">Numbers:</label>
       <input type="text" name="numbers" id="numbers" />
       <button type="submit">Calculate</button>
