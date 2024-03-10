@@ -37,7 +37,7 @@ const getMode = array => {
     // Now you need to find the value that occurs with the highest frequency.
     // Then sort it from the smallest to largest
     // Then choose the first index of the resulted object.keys(counts)
-    const highest = Object.keys(counts).sort((a, b) => counts[a] - counts[b])[0];
+    const highest = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0];
 }
 
 const calculate = () => {
