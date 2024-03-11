@@ -1,9 +1,15 @@
 // getting mean value by dividing the total sum of an array then divided it by the total length of an array
+// mean = a1+a2+a3+a4+a5 / (total data)
 const getMean = array => array.reduce((acc, el) => acc + el, 0) / array.length;
 
+// (sort data smallest to largest, then if it's even total, calculate two middle datas, otherwise, get the middle one)
+// even median = a,b,c,d,e,f = c+d / 2
+// odd median = a,b,c,d,e = c
 const getMedian = array => {
+    // It's a bad practice to mutate (which is sort() function) array param directly
+    // Add a shallow copy of an array by using slice() so you can mutate that freely before sorting it
     // To sort your numbers from smallest to largest, pass a callback function that takes parameters a and b, and returns the result of subtracting b from a.
-    const sorted = array.sort((a, b) => a - b);
+    const sorted = array.slice().sort((a, b) => a - b);
 
     // using getMean() must incl. an array as the args.
     // and sorted value only accepts array value
@@ -14,6 +20,9 @@ const getMedian = array => {
     return median;
 }
 
+// return the highest occurence of data (array)
+// mode = a,b,b,b,c,c,c,d,d = b,c
+// mode = a,a,a,b,b,c,c,d,d = a
 const getMode = array => {
     const counts = {};
 
@@ -38,6 +47,47 @@ const getMode = array => {
     // Then sort it from the largest to the smallest index
     // Then choose the first index of the resulted object.keys(counts)
     const highest = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0];
+
+    // return the object count keys and filter the element and check whether the element index of counts is equal to highest count object
+    const mode = Object.keys(counts).filter(el => counts[el] === counts[highest]);
+
+    return mode.join(', ');
+}
+
+// Math.max(...arr) returns maximum element from an array, you need to spread the array first
+// Math.min(...arr) returns minimum element from an array, you need to spread the array first
+// range = a1,a2,b1,b2,c,d1,d2,d3 = d3 - a1
+const getRange = array => Math.max(...array) - Math.min(...array);
+
+const getVariance = array => {
+    // get mean value first
+    const mean = getMean(array);
+
+    // // [a, b, c, ...] => [a-mean,b-mean,c-mean,...]
+    // const differences = array.map(el => el - mean)
+
+    // // [a-mean,b-mean,...] => [a-mean**2,b-mean**2,...]
+    // const squaredDifferences = differences.map(el => el **2)
+
+    // // [a,b,c] => [0+a,b,c] => [a+b,c] => [a+b+c]
+    // const sumSquaredDifferences = squaredDifferences.reduce((acc, el) => acc + el, 0)
+
+    // [a,b,c] => [0+a,b,c] => [0+(a-mean)**2, b, c] => [a+(b-mean)**2, c] => [ab+(c-mean)**2] => abc / 3
+    const variance = array.reduce((acc, el) => {
+        const difference = el - mean;
+        const squared = difference **2;
+        return acc + squared;
+    }, 0) / array.length;
+    
+    return variance;
+}
+
+const getStandardDeviation = array => {
+    const variance = getVariance(array);
+
+    // calculate root exponent using inverted exponent x**1/n, but use square root func. instead
+    const standardDeviation = Math.sqrt(variance);
+    return standardDeviation;
 }
 
 const calculate = () => {
@@ -53,9 +103,15 @@ const calculate = () => {
 
     const mean = getMean(numbers);
     const median = getMedian(numbers);
+    const mode = getMode(numbers);
+    const range = getRange(numbers);
+    const variance = getVariance(numbers);
+    const standardDeviation = getStandardDeviation(numbers);
 
     document.querySelector('#mean').textContent = mean;
     document.querySelector('#median').textContent = median;
+    document.querySelector('#mode').textContent = mode;
+    document.querySelector('#range').textContent = range;
+    document.querySelector('#variance').textContent = variance;
+    document.querySelector('#standardDeviation').textContent = standardDeviation;
 }
-
-// calculate();
