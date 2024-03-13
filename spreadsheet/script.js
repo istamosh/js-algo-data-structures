@@ -1,3 +1,17 @@
+const infixToFunction = {
+    '+': (x, y) => x + y,
+    '-': (x, y) => x - y,
+    '*': (x, y) => x * y,
+    '/': (x, y) => x / y,
+};
+const infixEval = (str, regex) => str.replace(regex, (_match, arg1, operator, arg2) => infixToFunction[operator](parseFloat(arg1), parseFloat(arg2)))
+const highPrecedence = str => {
+    const regex = /([\d.]+)([*\/])([\d.]+)/;
+
+    const str2 = infixEval(str, regex);
+
+    return str2 === str ? str : highPrecedence(str2);
+}
 const isEven = num => num % 2 === 0;
 const sum = nums => nums.reduce((acc, el) => acc + el)
 const average = nums => sum(nums) / nums.length;
@@ -14,6 +28,54 @@ const spreadsheetFunctions = {
     sum,
     average,
     median,
+    even: nums => nums.filter(isEven),
+
+    // check if some element in the array is even
+    someeven: nums => nums.some(isEven),
+
+    // check if every element in the array is even
+    everyeven: nums => nums.every(isEven),
+
+    // returns the first two elements
+    firsttwo: nums => nums.slice(0, 2),
+
+    // returns the last two elements
+    lasttwo: nums => nums.slice(-2),
+
+    // returns whether the nums array has 2 in the values
+    has2: nums => nums.includes(2),
+
+    // returns nums with every value incremented by one
+    increment: nums => nums.map(num => num + 1),
+
+    // takes the first two num. from an array and returns a random number between them
+    random: ([x, y]) => Math.floor(Math.random() * y + x),
+
+    // Add a range property which generates a range from nums.
+    range: ([x, y]) => range(x, y),
+
+    // remove duplicates using new set method with spread operator (ES6)
+    nodupes: nums => [...new Set(nums).values()],
+
+    // handle potential edge cases
+    '': nums => nums,
+}
+
+const applyFunction = str => {
+    const noHigh = highPrecedence(str)
+    
+    const infix = /([\d.]+)([+-])([\d.]+)/;
+
+    const str2 = infixEval(noHigh, infix)
+
+    // This expression will look for function calls like sum(1, 4)
+    const functionCall = /([a-z0-9]*)\(([0-9., ]*)\)(?!.*\()/i;
+
+    const toNumberList = args => args.split(',').map(parseFloat);
+
+    const apply = (fn, args) => spreadsheetFunctions[fn.toLowerCase()](toNumberList(args));
+
+    return str2.replace(functionCall, (match, fn, args) => spreadsheetFunctions.hasOwnProperty(fn.toLowerCase()) ? apply(fn, args) : match)
 }
 
 // implicitly returns an array constructor
@@ -38,7 +100,17 @@ const evalFormula = (x, cells) => {
 
     const elemValue = num => character => idToText(character + num)
 
-    const addCharacters = character1 => character2 => num => charRange(character1, character2).map(elemValue)
+    const addCharacters = character1 => character2 => num => charRange(character1, character2).map(elemValue(num))
+
+    // You need to make another function call to access that innermost function reference for the .map() callback by using immediate invoke function(arg1)(arg2)
+    const rangeExpanded = x.replace(rangeRegex, (_match, char1, num1, char2, num2) => rangeFromString(num1, num2).map(addCharacters(char1)(char2)))
+
+    const cellRegex = /[A-J][1-9][0-9]?/gi;
+
+    const cellExpanded = rangeExpanded.replace(cellRegex, match => idToText(match.toUpperCase()))
+
+    const functionExpanded = applyFunction(cellExpanded)
+    return functionExpanded === x ? functionExpanded : evalFormula(functionExpanded, cells)
 }
 
 // declare the window.onload property to append a function, not like this onload(), but this onload = () => {};
@@ -83,7 +155,7 @@ const update = event => {
     // use \s to remove all whitespaces
     const value = element.value.replace(/\s/g, '');
 
-    if (!value.includes(element.id) && value.charAt(0) === '=') {
-
+    if (!value.includes(element.id) && value.startsWith('=')) {
+        element.value = evalFormula(value.slice(1), Array.from(document.getElementById('container').children));
     }
 }
