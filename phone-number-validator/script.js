@@ -38,8 +38,22 @@ numpad0.addEventListener('click', () => {
     console.log('pressed 0');
 })
 
-// document.onkeydown = e => {
-//     if (e.keyCode === 48) {
-//         console.log('pressed 0 key');
-//     }
-// }
+const isEmpty = () => {
+    if (inputBox.value === '') {
+        alert('Please provide a phone number');
+        return true;
+    }
+    return false;
+}
+
+checkButton.addEventListener('click', () => {
+    // check if input is empty
+    if (isEmpty()) return;
+
+    console.log('hehe');
+})
+
+// auto focus key press to inputbox
+window.onkeydown = () => {
+    inputBox.focus();
+}
