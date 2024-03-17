@@ -45,6 +45,13 @@ const isEmpty = () => {
     }
     return false;
 }
+const clearInput = () => {
+    if (inputBox.value.length !== 0) {
+        inputBox.value = '';
+    } else {
+        console.log(`it's already empty`)
+    }
+}
 
 checkButton.addEventListener('click', () => {
     // check if input is empty
@@ -52,6 +59,7 @@ checkButton.addEventListener('click', () => {
 
     console.log('hehe');
 })
+clearButton.addEventListener('click', clearInput)
 
 // auto focus key press to inputbox
 window.onkeydown = () => {
