@@ -45,6 +45,17 @@ const isEmpty = () => {
     }
     return false;
 }
+const check = () => {
+    // check if input is empty
+    if (isEmpty()) return;
+    
+    //#region regex section (WIP)
+    const prefix = /^1/g;
+    const regex = /1| ?(\(\d{3}\))|(\d{3})/g;
+    //#endregion
+
+    console.log('hehe');
+}
 const clearInput = () => {
     if (inputBox.value.length !== 0) {
         inputBox.value = '';
@@ -53,11 +64,10 @@ const clearInput = () => {
     }
 }
 
-checkButton.addEventListener('click', () => {
-    // check if input is empty
-    if (isEmpty()) return;
-
-    console.log('hehe');
+checkButton.addEventListener('click', check)
+inputBox.addEventListener('keyup', e => {
+    e.preventDefault();
+    if (e.key === 'Enter') check();
 })
 clearButton.addEventListener('click', clearInput)
 
