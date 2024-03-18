@@ -51,7 +51,8 @@ const check = () => {
     
     //#region regex section (WIP)
     const prefix = /^1/g;
-    const regex = /1| ?(\(\d{3}\))|(\d{3})/g;
+    const body = /((\(\d{3}\))|(\d{3})?[- ]?(\d{3})[- ]?(\d{4}))/g;
+    const suffix = /[- ]?(\d{3})[- ]?(\d{4})/g;
     //#endregion
 
     console.log('hehe');
