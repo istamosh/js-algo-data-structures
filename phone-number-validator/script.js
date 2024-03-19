@@ -49,20 +49,35 @@ const check = () => {
     // check if input is empty
     if (isEmpty()) return;
     
-    //#region regex section (WIP)
-    const prefix = /^1/g;
-    const body = /((\(\d{3}\))|(\d{3})?[- ]?(\d{3})[- ]?(\d{4}))/g;
-    const suffix = /[- ]?(\d{3})[- ]?(\d{4})/g;
+    //#region regex section
+    // Begin with '1' followed by an optional ' ' (optional country code)
+    const country = /^(1 ?)?/;
+    // look for either '(ddd)' OR 'ddd' and followed by an optional '-' or ' '
+    const area = /(\(\d{3}\)|\d{3})[- ]?/;
+    // It's 'ddd-dddd', 'ddd dddd', or 'ddddddd' for the end
+    const phone = /\d{3}[- ]?\d{4}$/;
+    // full valid phone pattern
+    const regex = new RegExp(country.source + area.source + phone.source);
     //#endregion
 
-    console.log('hehe');
+    // fetch the value and trim the leading and trailing whitespaces
+    const trimmedInput = inputBox.value.trim();
+    // process it
+    const is = regex.test(trimmedInput) ? ['valid', 'Valid'] : ['invalid', 'Invalid'];
+    // prepare the child div
+    const p = document.createElement('p');
+    p.className = 'result-text';
+    p.id = is[0];
+    p.appendChild(document.createTextNode(`${is[1]} US number: ${trimmedInput}`))
+    resultDiv.appendChild(p);
+
+    inputBox.value = '';
 }
-const clearInput = () => {
+const clear = () => {
     if (inputBox.value.length !== 0) {
         inputBox.value = '';
-    } else {
-        console.log(`it's already empty`)
     }
+    resultDiv.innerHTML = '';
 }
 
 checkButton.addEventListener('click', check)
@@ -70,7 +85,7 @@ inputBox.addEventListener('keyup', e => {
     e.preventDefault();
     if (e.key === 'Enter') check();
 })
-clearButton.addEventListener('click', clearInput)
+clearButton.addEventListener('click', clear)
 
 // auto focus key press to inputbox
 window.onkeydown = () => {
