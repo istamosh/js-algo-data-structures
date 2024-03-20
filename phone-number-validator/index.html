@@ -8,28 +8,42 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <input type="text" id="user-input">
+    <div class="outerbody">
+        <div class="innerbody">
+            <div class="topside">
+                <div class="cameraframe">
+                    <div class="camera"></div>
+                </div>
+            </div>
 
-    <button id="check-btn">Check Number</button>
-    <button id="clear-btn">Clear Input</button>
+            <div class="screen">
+                <div id="results-div"></div>
 
-    <div id="numpad-area">
-        <button id="numpad1">1</button>
-        <button id="numpad2">2</button>
-        <button id="numpad3">3</button>
-        <button id="numpad4">4</button>
-        <button id="numpad5">5</button>
-        <button id="numpad6">6</button>
-        <button id="numpad7">7</button>
-        <button id="numpad8">8</button>
-        <button id="numpad9">9</button>
-        <button id="numpad0">0</button>
-        <button id="numpad(">(</button>
-        <button id="numpad)">)</button>
-        <button id="numpad-">-</button>
+                <div class="dialbox">
+                    <input type="text" id="user-input">
+
+                    <button id="check-btn">Check Number</button>
+                    <button id="clear-btn">Clear Input</button>
+                
+                    <div id="numpad-area">
+                        <button id="numpad1">1</button>
+                        <button id="numpad2">2</button>
+                        <button id="numpad3">3</button>
+                        <button id="numpad4">4</button>
+                        <button id="numpad5">5</button>
+                        <button id="numpad6">6</button>
+                        <button id="numpad7">7</button>
+                        <button id="numpad8">8</button>
+                        <button id="numpad9">9</button>
+                        <button id="numpad0">0</button>
+                        <button id="numpad(">(</button>
+                        <button id="numpad)">)</button>
+                        <button id="numpad-">-</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div id="results-div"></div>
 
     <script src="script.js"></script>
 </body>
