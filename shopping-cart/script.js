@@ -102,3 +102,64 @@ products.forEach(({name, id, price, category}) => {
     </div>
     `;
 })
+
+// declaring a javascript class
+class ShoppingCart {
+    // declaring constructor method
+    // The this keyword in JavaScript is used to refer to the current object. Depending on where this is used, what it references changes. In the case of a class, it refers to the instance of the object being constructed. You can use the this keyword to set the properties of the object being instantiated
+    constructor() {
+        this.items = [];
+        this.total = 0;
+        this.taxRate = 8.25;
+    }
+    addItem(id, products) {
+        // In your addItem function, declare a product variable, and assign it the value of calling the .find() method on the products array.
+        // For the callback to .find(), pass a function that takes a single parameter item, and returns whether the id property of item is strictly equal to the id parameter passed to addItem.
+        const product = products.find(item => item.id === id)
+
+        // destructure name and price vars. from product
+        const {name, price} = product;
+
+        // push the product into the cart's items array. Remember to use the this keyword.
+        this.items.push(product);
+
+        const totalCountPerProduct = {};
+
+        this.items.forEach(dessert => {
+            // In your forEach callback, you need to update the totalCountPerProduct object
+            // Using the id of the current dessert as your property, update the value of the property to be the current value plus one.
+            // Do not use the addition assignment operator for this.
+            // You now have a small bug. When you try to access a property of an object and the property doesn't exist, you get undefined. This means if the dessert isn't already present in the totalCountPerProduct object, you end up trying to add 1 to undefined, which results in NaN.
+            // To fix this, you can use the || operator to set the value to 0 if it doesn't exist.
+            totalCountPerProduct[dessert.id] = (totalCountPerProduct[dessert.id] || 0) + 1;
+        });
+
+        // Now you need to get prepared to update the display with the new product the user added. Declare a currentProductCount variable, and assign it the value of the totalCountPerProduct object's property matching the id of product.
+        const currentProductCount = totalCountPerProduct[product.id];
+
+        // You haven't written the code to generate the HTML yet, but if a product has already been added to the user's cart then there will be a matching element which you'll need.
+        const currentProductCountSpan = document.getElementById(`product-count-for-id${id}`);
+        
+        // The behaviour of the addItem method needs to change if the product is already in the cart or not. Create a ternary that checks if the current product is already in the cart
+        currentProductCount > 1
+        ? currentProductCountSpan.textContent = `${currentProductCount}x` 
+        : productsContainer.innerHTML += `
+        <div class="product" id="dessert${id}">
+            <p>
+                <span class="product-count" id="product-count-for-id${id}"></span>${name}
+            </p>
+            <p>${price}</p>
+        </div>
+        `;
+    }
+};
+
+// instantiate a new ShoppingCart object and assign it to a variable
+const cart = new ShoppingCart();
+
+const addToCartBtns = document.getElementsByClassName('add-to-cart-btn');
+
+// addToCartBtns is considered Collection, not an array, so you need to spread it into an array to invoke forEach()
+[...addToCartBtns].forEach(btn => {
+    btn.addEventListener('click', event => {});
+});
