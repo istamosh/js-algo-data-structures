@@ -152,6 +152,47 @@ class ShoppingCart {
         </div>
         `;
     }
+    getCounts() {
+        return this.items.length;
+    }
+    clearCart() {
+        if (!this.items.length) {
+            alert('Your shopping cart is already empty');
+            return;
+        }
+        const isCartCleared = confirm('Are you sure you want to clear all items from your shopping cart?');
+    
+        if (isCartCleared) {
+            this.items = [];
+            this.total = 0;
+
+            productsContainer.innerHTML = '';
+            totalNumberOfItems.textContent = 0;
+            cartSubTotal.textContent = 0;
+            cartTaxes.textContent = 0;
+            cartTotal.textContent = 0;
+        }
+    }
+    calculateTaxes(amount) {
+        // Because of the way computers store and work with numbers, calculations involving decimal numbers can result in some strange behavior. For example, 0.1 + 0.2 is not equal to 0.3. This is because computers store decimal numbers as binary fractions, and some binary fractions cannot be represented exactly as decimal fractions.
+        // We want to clean up the number result from your calculation.
+        // This will round the number to two decimal places and return a string.
+        return parseFloat(((this.taxRate / 100) * amount).toFixed(2));
+    }
+    calculateTotal() {
+        const subTotal = this.items.reduce((total, item) => total + item.price, 0)
+    
+        const tax = this.calculateTaxes(subTotal);
+
+        this.total = subTotal + tax;
+
+        cartSubTotal.textContent = `$${subTotal.toFixed(2)}`;
+
+        cartTaxes.textContent = `$${tax.toFixed(2)}`;
+        cartTotal.textContent = `$${this.total.toFixed(2)}`;
+
+        return this.total;
+    }
 };
 
 // instantiate a new ShoppingCart object and assign it to a variable
@@ -161,5 +202,21 @@ const addToCartBtns = document.getElementsByClassName('add-to-cart-btn');
 
 // addToCartBtns is considered Collection, not an array, so you need to spread it into an array to invoke forEach()
 [...addToCartBtns].forEach(btn => {
-    btn.addEventListener('click', event => {});
+    btn.addEventListener('click', event => {
+        cart.addItem(Number(event.target.id), products);
+
+        totalNumberOfItems.textContent = cart.getCounts();
+
+        cart.calculateTotal();
+    });
 });
+
+cartBtn.addEventListener('click', () => {
+    isCartShowing = !isCartShowing;
+    showHideCartSpan.textContent = isCartShowing ? "Hide" : "Show";
+    cartContainer.style.display = isCartShowing ? "block" : "none";
+});
+
+// Add a click event listener to the clearCartBtn. For the callback, you can pass in cart.clearCart directly.
+// However, doing so will not work, because the context of this will be the clearCartBtn element. You need to bind the clearCart method to the cart object.
+clearCartBtn.addEventListener('click', cart.clearCart.bind(cart));
