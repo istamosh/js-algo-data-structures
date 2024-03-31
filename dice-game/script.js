@@ -20,4 +20,188 @@ let score = 0;
 let totalScore = 0;
 let round = 1;
 
-rulesBtn.addEventListener('click', () => {})
+const rollDice = () => {
+    diceValuesArr = []
+    for (let i = 0; i < 5; i++) {
+        // random int number 1-6
+        const randomDice = Math.floor(Math.random() * 6) + 1;
+        diceValuesArr.push(randomDice);
+        listOfAllDice.forEach((dice, index) => {
+            dice.textContent = diceValuesArr[index]
+        });
+    }
+}
+
+const updateStats = () => {
+    currentRoundRollsText.textContent = rolls;
+    currentRoundText.textContent = round;
+}
+
+const updateRadioOption = (optionNode, score) => {
+    scoreInputs[optionNode].disabled = false;
+    scoreInputs[optionNode].value = score;
+    scoreSpans[optionNode].textContent = `, score = ${score}`;
+}
+
+const updateScore = (selectedValue, achieved) => {
+    totalScore += parseInt(selectedValue)
+    totalScoreText.textContent = totalScore;
+    scoreHistory.innerHTML += `<li>${achieved} : ${selectedValue}</li>`
+}
+
+const getHighestDuplicates = arr => {
+    const counts = {}
+
+    for (let num of arr) {
+        if (counts[num]) {
+            counts[num]++;
+        } else {
+            counts[num] = 1;
+        }
+    }
+
+    let highestCount = 0;
+
+    for (let num of arr) {
+        const count = counts[num];
+        if (count >= 3 && count > highestCount) {
+            highestCount = count;
+        }
+        if (count >= 4 && count > highestCount) {
+            highestCount = count;
+        }
+        const sumOfAllDice = diceValuesArr.reduce((a, b) => a + b, 0);
+
+        if (highestCount >= 4) {
+            updateRadioOption(1, sumOfAllDice);
+        }
+        if (highestCount >= 3) {
+            updateRadioOption(0, sumOfAllDice);
+        }
+        
+        updateRadioOption(5, 0);
+    }
+}
+
+const checkForStraights = arr => {
+    const sortedNumbersArr = arr.sort((a, b) => a - b)
+    // Set and spread operator is required to only filter unique values inside an array
+    const uniqueNumbersArr = [...new Set(sortedNumbersArr)];
+    const uniqueNumbersStr = uniqueNumbersArr.join('');
+    const smallStraightsArr = ['1234', '2345', '3456']
+    const largeStraightsArr = ['12345', '23456'];
+
+    if (smallStraightsArr.includes(uniqueNumbersStr)) {
+        updateRadioOption(3, 30);
+    }
+    if (largeStraightsArr.includes(uniqueNumbersStr)) {
+        updateRadioOption(4, 40);
+    }
+    updateRadioOption(5, 0);
+}
+
+const detectFullHouse = arr => {
+    const counts = {}
+    // check if counts[num] is truthy. 
+    // If so, then increment the count by one, 
+    // otherwise initialize counts[num] with a value of 1.
+    for (const num of arr) {
+        counts[num] = counts[num] 
+        ? counts[num] +1
+        : 1;
+    }
+
+    // This will create an array of only the counts values.
+    // This will check if 3 is inside this new array.
+    const hasThreeOfAKind = Object.values(counts).includes(3)
+
+    const hasPair = Object.values(counts).includes(2);
+
+    if (hasThreeOfAKind && hasPair) {
+        updateRadioOption(2, 25);
+    }
+    updateRadioOption(5, 0)
+}
+
+const resetRadioOption = () => {
+    scoreInputs.forEach(input => {
+        input.disabled = true;
+        input.checked = false;
+    });
+    scoreSpans.forEach(span => {
+        span.textContent = ''
+    });
+}
+
+const resetGame = () => {
+    diceValuesArr = [0, 0, 0, 0, 0]
+
+    score = 0
+    totalScore = 0
+    rolls = 0
+
+    listOfAllDice.forEach((dice, index) => {
+        dice.textContent = diceValuesArr[index];
+    });
+    totalScoreText.textContent = totalScore;
+    scoreHistory.innerHTML = '';
+    currentRoundRollsText.textContent = rolls;
+    currentRoundText.textContent = round;
+    resetRadioOption()
+
+    round = 1
+}
+
+rollDiceBtn.addEventListener('click', () => {
+    if (rolls === 3) {
+        alert('You have made three rolls this round. Please select a score.')
+    } else {
+        rolls++;
+        resetRadioOption()
+        rollDice();
+        updateStats();
+        getHighestDuplicates(diceValuesArr);
+        detectFullHouse(diceValuesArr);
+        checkForStraights(diceValuesArr);
+    }
+})
+
+rulesBtn.addEventListener('click', () => {
+    isModalShowing = !isModalShowing;
+
+    if (isModalShowing) {
+        rulesBtn.textContent = 'Hide Rules';
+        rulesContainer.style.display = 'block';
+    } else {
+        rulesBtn.textContent = 'Show Rules';
+        rulesContainer.style.display = 'none';
+    }
+})
+
+keepScoreBtn.addEventListener('click', () => {
+    let selectedValue;
+    let achieved;
+    for (const radioButton of scoreInputs) {
+        if (radioButton.checked) {
+            selectedValue = radioButton.value;
+            achieved = radioButton.id;
+            break;
+        }
+    }
+    if (selectedValue) {
+        rolls = 0;
+        round++;
+        updateStats();
+        resetRadioOption()
+        updateScore(selectedValue, achieved)
+        if (round > 6) {
+            setTimeout(() => {
+                alert(`Game Over! Your total score is ${totalScore}`)
+
+                resetGame();
+            }, 500);
+        }
+    } else {
+        alert('Please select an option or roll the dice')
+    }
+})
