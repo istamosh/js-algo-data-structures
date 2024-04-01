@@ -19,7 +19,14 @@ const cashNumber = document.getElementById('cash');
 const purchaseButton = document.getElementById('purchase-btn');
 
 const purchase = () => {
+    if (cashNumber.value === ''
+    || cashNumber.value === null) {
+        console.log('empty')
+        return;
+    }
+    console.log(cashNumber.value);
+
     const cash = cashNumber.textContent;
 }
 
-purchaseButton.addEventListener('click', () => {})
+purchaseButton.addEventListener('click', purchase)
