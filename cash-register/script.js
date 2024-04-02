@@ -26,7 +26,17 @@ const purchase = () => {
     }
     console.log(cashNumber.value);
 
-    const cash = cashNumber.textContent;
+    // store the value into a variable
+    const cash = cashNumber.value;
+    // make another copy of the cashes in drawer
+    let stocks = [...cid];
+    // takes customer money
+    // then give changes to the customer based on the money that the customer offers
+    // give highest possible stock available inside an array
+    // then gradually going down in accordance to the changes
+    // then reduce the stock based on every changes spent
+    // then describe the changes in a change-due div as a list
+    // if there are any insufficient funds, the changes would be aborted
 }
 
 purchaseButton.addEventListener('click', purchase)
