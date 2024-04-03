@@ -17,6 +17,7 @@ let cid = [
 
 const cashNumber = document.getElementById('cash');
 const purchaseButton = document.getElementById('purchase-btn');
+const changeDiv = document.getElementById('change-due');
 
 const purchase = () => {
     if (cashNumber.value === ''
@@ -24,19 +25,39 @@ const purchase = () => {
         console.log('empty')
         return;
     }
-    console.log(cashNumber.value);
 
-    // store the value into a variable
-    const cash = cashNumber.value;
+    // store the value into a variable and trim floating number beyond 2 digits
+    const cash = Math.floor(cashNumber.value * 100) / 100;
+    console.log(cash)
     // make another copy of the cashes in drawer
     let stocks = [...cid];
-    // takes customer money
-    // then give changes to the customer based on the money that the customer offers
+    // calculate pre-applying changes
+    const change = parseFloat((cash - price).toFixed(2));
+
+    if (change < 0) {
+      changeDiv.textContent = 'Status: INSUFFICIENT_FUNDS';
+      return;
+    } else {
+      changeDiv.textContent = '';
+      console.log(change)
+    }
     // give highest possible stock available inside an array
     // then gradually going down in accordance to the changes
     // then reduce the stock based on every changes spent
     // then describe the changes in a change-due div as a list
     // if there are any insufficient funds, the changes would be aborted
 }
+
+cashNumber.addEventListener('keydown', e => {
+  if (e.key === 'e' 
+  || e.key === 'E'
+  || e.key === '+'
+  || e.key === '-') e.preventDefault();
+})
+cashNumber.addEventListener('paste', e => {
+  const clipboardData = e.clipboardData.getData('text/plain');
+  const digitOnly = /^\d+$/;
+  if (!digitOnly.test(clipboardData)) e.preventDefault();
+})
 
 purchaseButton.addEventListener('click', purchase)
