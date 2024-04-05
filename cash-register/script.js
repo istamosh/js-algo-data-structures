@@ -49,19 +49,30 @@ const purchase = () => {
     // give highest possible stock available inside an array'
     //#region Experiment
     const reducer = [0.01, 0.05, 0.1, 0.25, 1, 5, 10, 20, 100];
-    let changes = [];
-    // iterate thru the cid array
-    for (let i = 0; i < cid.length; i++) {
-      // check if change is below the cid nominee
-      if (change < cid[i]) {
-        // shift 1 to prev. iteration, check if stock is equal or high
-        if (cid[i - 1][1] >= reducer[i - 1]) {
-          // reduce the stock
-          cid[i - 1][1] -= reducer[i - 1]
-          // push the nominee into the change list
-          changes.push(cid[i-1]);
+    const reverseReducer = reducer.reverse();
+    // let changes = [];
+    // // iterate thru the cid array
+    // for (let i = 0; i < cid.length; i++) {
+    //   // check if change is below the cid nominee
+    //   if (change < cid[i]) {
+    //     // shift 1 to prev. iteration, check if stock is equal or higher from the supposed calculation
+    //     if (cid[i - 1][1] >= reducer[i - 1]) {
+    //       // reduce the stock
+    //       cid[i - 1][1] -= reducer[i - 1]
+    //       // push the nominee into the change list
+    //       changes.push(cid[i-1]);
+    //     }
+    //   }
+    // }
+
+    // run a simulation
+    while (change > 0) {
+      cid.findLast((element, i) => {
+        if (change >= element[0] && change <= element[1]) {
+          cid[i][1] -= reverseReducer[i];
+          change -= element;
         }
-      }
+      });
     }
     //#endregion
     
