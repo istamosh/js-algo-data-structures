@@ -19,6 +19,45 @@ const cashNumber = document.getElementById('cash');
 const purchaseButton = document.getElementById('purchase-btn');
 const changeDiv = document.getElementById('change-due');
 
+const testCase = () => {
+  if (0.01 > 0) {
+    console.log('above 10');
+  }
+  else console.log('zero')
+}
+
+const operation = change => {
+  const denominations = [0.01, 0.05, 0.1, 0.25, 1, 5, 10, 20, 100];
+
+  while (change > 0) {
+    for (let i = cid.length - 1; i >= 0; i--) {
+      // check if change is higher than the denomination
+      if (change >= denominations[i]) {
+        // check if cid stock is available
+        if (cid[i][1] >= change) {
+          // update by reducing the stock and update the remaining change
+          cid[i][1] -= denominations[i];
+          change -= denominations[i];
+        }
+        // check if iteration reached 0 and no available stock left
+        else if (i === 0 && cid[i][1] < change) return false;
+        else break;
+      }
+    }
+  }
+  return true;
+}
+
+const operation2 = change => {
+  const denominations = [0.01, 0.05, 0.1, 0.25, 1, 5, 10, 20, 100];
+
+  while (change > 0) {
+    cid.forEach((el, i) => {
+      // if (change >= denominations[])
+    });
+  }
+}
+
 const purchase = () => {
     if (cashNumber.value === ''
     || cashNumber.value === null) {
@@ -45,11 +84,11 @@ const purchase = () => {
       console.log(change)
     }
 
+    const result = operation(change);
 
-    // give highest possible stock available inside an array'
+    // give highest possible stock available inside an array
+
     //#region Experiment
-    const reducer = [0.01, 0.05, 0.1, 0.25, 1, 5, 10, 20, 100];
-    const reverseReducer = reducer.reverse();
     // let changes = [];
     // // iterate thru the cid array
     // for (let i = 0; i < cid.length; i++) {
@@ -66,14 +105,34 @@ const purchase = () => {
     // }
 
     // run a simulation
-    while (change > 0) {
-      cid.findLast((element, i) => {
-        if (change >= element[0] && change <= element[1]) {
-          cid[i][1] -= reverseReducer[i];
-          change -= element;
-        }
-      });
-    }
+    // while (change > 0) {
+    //   cid.findLast((element, i) => {
+    //     if (change >= element[0] && change <= element[1]) {
+    //       cid[i][1] -= reverseReducer[i];
+    //       change -= element;
+    //     }
+    //   });
+    // }
+
+    // run simulation II
+    // while (change > 0) {
+    //   for (let i = cid.length - 1; i >= 0; i--) {
+    //     // check if change is higher than the denomination
+    //     myIf: if (change >= denominations[i]) {
+    //       // check if cid stock is available
+    //       if (cid[i][1] >= change) {
+    //         // update by reducing the stock and update the remaining change
+    //         cid[i][1] -= denominations[i];
+    //         change -= denominations[i];
+    //       }
+    //       // check if iteration reached 0 and no available stock left
+    //       else if (i === 0 && cid[i][1] < change) {
+    //         break;
+    //       }
+    //       else break myIf;
+    //     }
+    //   }
+    // }
     //#endregion
     
     // then gradually going down in accordance to the changes
@@ -94,4 +153,4 @@ cashNumber.addEventListener('paste', e => {
   if (!digitOnly.test(clipboardData)) e.preventDefault();
 })
 
-purchaseButton.addEventListener('click', purchase)
+purchaseButton.addEventListener('click', testCase)
