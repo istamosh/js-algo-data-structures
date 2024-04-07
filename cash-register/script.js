@@ -20,42 +20,50 @@ const purchaseButton = document.getElementById('purchase-btn');
 const changeDiv = document.getElementById('change-due');
 
 const testCase = () => {
-  if (0.01 > 0) {
-    console.log('above 10');
-  }
-  else console.log('zero')
+  cid.forEach(([ el ], i) => {
+    console.log(`${el}, ${i}`)
+  });
 }
 
 const operation = change => {
   const denominations = [0.01, 0.05, 0.1, 0.25, 1, 5, 10, 20, 100];
 
-  while (change > 0) {
-    for (let i = cid.length - 1; i >= 0; i--) {
-      // check if change is higher than the denomination
-      if (change >= denominations[i]) {
-        // check if cid stock is available
-        if (cid[i][1] >= change) {
-          // update by reducing the stock and update the remaining change
-          cid[i][1] -= denominations[i];
-          change -= denominations[i];
-        }
-        // check if iteration reached 0 and no available stock left
-        else if (i === 0 && cid[i][1] < change) return false;
-        else break;
+  let themCook = '';
+  let queue = new Array(9).fill(0);
+
+  // iterate backwards (hi to low)
+  for (let i = cid.length -1; i >= 0; i--) {
+    // check if the change is still high or equal the denomination
+    // and check if the stock is available
+    while (change >= denominations[i] && cid[i][1] >= denominations[i]) {
+      // reduce the current stock and reduce the current change
+      cid[i][1] = parseFloat((cid[i][1] - denominations[i]).toFixed(2));
+      change = parseFloat((change - denominations[i]).toFixed(2));
+      console.log(change);
+      queue[i] += 1;
+    }
+    // check if it's not reached last iterations yet and
+    // has insufficient change OR insufficient stock
+    if (i > 0 && (change < denominations[i] || cid[i][1] < denominations[i])) {
+      if (change < denominations[i]) {
+        console.log(`Skipping from ${denominations[i]}...`)
+        continue;
       }
+      console.log(`Denom ${cid[i][0]} is out of stock ($ ${cid[i][1]})`);
+      continue;
+    }
+    // check if the last penny is not in stock
+    if (i === 0 && cid[i][1] < denominations[i]) {
+      console.log('No stock left, payment is aborted');
+      return false;
     }
   }
-  return true;
-}
 
-const operation2 = change => {
-  const denominations = [0.01, 0.05, 0.1, 0.25, 1, 5, 10, 20, 100];
-
-  while (change > 0) {
-    cid.forEach((el, i) => {
-      // if (change >= denominations[])
-    });
-  }
+  console.log(queue);
+  queue.forEach((el, i) => {
+    if (el > 0) themCook += ` ${cid[i][0]}: $${denominations[i] * el}`
+  })
+  return themCook;
 }
 
 const purchase = () => {
@@ -68,72 +76,25 @@ const purchase = () => {
     // store the value into a variable and trim floating number beyond 2 digits
     const cash = Math.floor(cashNumber.value * 100) / 100;
     console.log(cash)
-    // make another copy of the cashes in drawer
-    // let stocks = [...cid];
-    // calculate pre-applying changes
-    const change = parseFloat((cash - price).toFixed(2));
 
-    if (change < 0) {
+    const changes = parseFloat((cash - price).toFixed(2));
+
+    if (changes < 0) {
       changeDiv.textContent = 'Status: INSUFFICIENT_FUNDS';
       return;
-    } else if (change === 0) {
+    } else if (changes === 0) {
       changeDiv.textContent = "Status: CLOSED";
       return;
     } else {
       changeDiv.textContent = '';
-      console.log(change)
+      console.log(changes + '<<')
     }
 
-    const result = operation(change);
+    const generate = operation(changes)
+    ? operation(changes)
+    : changeDiv.textContent = "Status: INSUFFICIENT_FUNDS";
 
-    // give highest possible stock available inside an array
-
-    //#region Experiment
-    // let changes = [];
-    // // iterate thru the cid array
-    // for (let i = 0; i < cid.length; i++) {
-    //   // check if change is below the cid nominee
-    //   if (change < cid[i]) {
-    //     // shift 1 to prev. iteration, check if stock is equal or higher from the supposed calculation
-    //     if (cid[i - 1][1] >= reducer[i - 1]) {
-    //       // reduce the stock
-    //       cid[i - 1][1] -= reducer[i - 1]
-    //       // push the nominee into the change list
-    //       changes.push(cid[i-1]);
-    //     }
-    //   }
-    // }
-
-    // run a simulation
-    // while (change > 0) {
-    //   cid.findLast((element, i) => {
-    //     if (change >= element[0] && change <= element[1]) {
-    //       cid[i][1] -= reverseReducer[i];
-    //       change -= element;
-    //     }
-    //   });
-    // }
-
-    // run simulation II
-    // while (change > 0) {
-    //   for (let i = cid.length - 1; i >= 0; i--) {
-    //     // check if change is higher than the denomination
-    //     myIf: if (change >= denominations[i]) {
-    //       // check if cid stock is available
-    //       if (cid[i][1] >= change) {
-    //         // update by reducing the stock and update the remaining change
-    //         cid[i][1] -= denominations[i];
-    //         change -= denominations[i];
-    //       }
-    //       // check if iteration reached 0 and no available stock left
-    //       else if (i === 0 && cid[i][1] < change) {
-    //         break;
-    //       }
-    //       else break myIf;
-    //     }
-    //   }
-    // }
-    //#endregion
+    console.log(generate);
     
     // then gradually going down in accordance to the changes
     // then reduce the stock based on every changes spent
@@ -153,4 +114,4 @@ cashNumber.addEventListener('paste', e => {
   if (!digitOnly.test(clipboardData)) e.preventDefault();
 })
 
-purchaseButton.addEventListener('click', testCase)
+purchaseButton.addEventListener('click', purchase)
