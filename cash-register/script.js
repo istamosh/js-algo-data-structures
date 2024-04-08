@@ -19,11 +19,14 @@ const cashNumber = document.getElementById('cash');
 const purchaseButton = document.getElementById('purchase-btn');
 const changeDiv = document.getElementById('change-due');
 
-const testCase = () => {
-  cid.forEach(([ el ], i) => {
-    console.log(`${el}, ${i}`)
+const checkStock = () => {
+  cid.forEach(([ el, stock ]) => {
+    console.log(`${el} remaining: ${stock}`)
   });
 }
+
+// precisely subtract two floating numbers
+const sub = (num1, num2) => parseFloat((num1 - num2).toFixed(2));
 
 const operation = change => {
   const denominations = [0.01, 0.05, 0.1, 0.25, 1, 5, 10, 20, 100];
@@ -33,12 +36,13 @@ const operation = change => {
 
   // iterate backwards (hi to low)
   for (let i = cid.length -1; i >= 0; i--) {
+    console.log(`Iteration ${i}`)
     // check if the change is still high or equal the denomination
     // and check if the stock is available
     while (change >= denominations[i] && cid[i][1] >= denominations[i]) {
       // reduce the current stock and reduce the current change
-      cid[i][1] = parseFloat((cid[i][1] - denominations[i]).toFixed(2));
-      change = parseFloat((change - denominations[i]).toFixed(2));
+      cid[i][1] = sub(cid[i][1], denominations[i]);
+      change = sub(change, denominations[i]);
       console.log(change);
       queue[i] += 1;
     }
@@ -55,7 +59,7 @@ const operation = change => {
     // check if the last penny is not in stock
     if (i === 0 && cid[i][1] < denominations[i]) {
       console.log('No stock left, payment is aborted');
-      return false;
+      return '';
     }
   }
 
@@ -77,7 +81,7 @@ const purchase = () => {
     const cash = Math.floor(cashNumber.value * 100) / 100;
     console.log(cash)
 
-    const changes = parseFloat((cash - price).toFixed(2));
+    const changes = sub(cash, price);
 
     if (changes < 0) {
       changeDiv.textContent = 'Status: INSUFFICIENT_FUNDS';
@@ -90,11 +94,11 @@ const purchase = () => {
       console.log(changes + '<<')
     }
 
-    const generate = operation(changes)
-    ? operation(changes)
-    : changeDiv.textContent = "Status: INSUFFICIENT_FUNDS";
+    const generate = operation(changes);
 
     console.log(generate);
+
+    checkStock();
     
     // then gradually going down in accordance to the changes
     // then reduce the stock based on every changes spent
