@@ -18,15 +18,41 @@ let cid = [
 const cashNumber = document.getElementById('cash');
 const purchaseButton = document.getElementById('purchase-btn');
 const changeDiv = document.getElementById('change-due');
+const cashInRegister = document.getElementById('cash-in-register');
+const expectedChange = document.getElementById('expected-change');
 
-const checkStock = () => {
-  cid.forEach(([ el, stock ]) => {
-    console.log(`${el} remaining: ${stock}`)
-  });
-}
+// make first letter uppercase
+// const upperCaseFirstLetter = string => `${string.slice(0, 1).toUpperCase()}${string.slice(1)}`;
+
+// make the second and the rest lowercase
+const lowerCaseAllExceptFirstLetter = string => `${string.replaceAll(/\S*/g, word =>
+`${word.slice(0, 1)}${word.slice(1).toLowerCase()}`)}`
 
 // precisely subtract two floating numbers
 const sub = (num1, num2) => parseFloat((num1 - num2).toFixed(2));
+const mult = (num1, num2) => parseFloat((num1 * num2).toFixed(2));
+const add = (num1, num2) => parseFloat((num1 + num2).toFixed(2));
+
+// cap the excess floating digits to only 2 digits
+const cap = num => Math.floor(num * 100) / 100;
+
+const checkStock = () => {
+  let html = '';
+  let total = 0;
+  cid.forEach(([ el, stock ] , i) => {
+    console.log(`${el} remaining: ${stock}`)
+    total = add(total, stock);
+
+    if (i > 0) html += `<br>${lowerCaseAllExceptFirstLetter(el)}: $${stock}`
+    else html += 
+    `<strong>Cashes in the register status:</strong><br>
+    ${lowerCaseAllExceptFirstLetter(el)}: $${stock}`
+  });
+  cashInRegister.innerHTML = html;
+  cashInRegister.innerHTML += `<br><br>${total}`
+}
+
+checkStock();
 
 const operation = change => {
   const denominations = [0.01, 0.05, 0.1, 0.25, 1, 5, 10, 20, 100];
@@ -63,11 +89,16 @@ const operation = change => {
     }
   }
 
+  // check if no stock left on the drawer
+  const emptyStock = cid.every(row => row.every(([ _, element ]) => element === 0))
+
   console.log(queue);
   queue.forEach((el, i) => {
-    if (el > 0) themCook += ` ${cid[i][0]}: $${denominations[i] * el}`
+    if (el > 0) themCook += ` ${cid[i][0]}: $${mult(denominations[i], el)}`
   })
-  return themCook;
+
+  if (!emptyStock) return `Status: OPEN${themCook}`;
+  else return `Status: CLOSED${themCook}`;
 }
 
 const purchase = () => {
@@ -78,16 +109,17 @@ const purchase = () => {
     }
 
     // store the value into a variable and trim floating number beyond 2 digits
-    const cash = Math.floor(cashNumber.value * 100) / 100;
+    const cash = cap(cashNumber.value);
     console.log(cash)
 
     const changes = sub(cash, price);
 
     if (changes < 0) {
       changeDiv.textContent = 'Status: INSUFFICIENT_FUNDS';
+      alert("Customer does not have enough money to purchase the item")
       return;
     } else if (changes === 0) {
-      changeDiv.textContent = "Status: CLOSED";
+      changeDiv.textContent = "No change due - customer paid with exact cash";
       return;
     } else {
       changeDiv.textContent = '';
@@ -97,6 +129,14 @@ const purchase = () => {
     const generate = operation(changes);
 
     console.log(generate);
+
+    if (generate !== '') {
+      changeDiv.textContent = `${generate}`
+    }
+    else {
+      changeDiv.textContent = 'Status: INSUFFICIENT_FUNDS';
+    }
+    
 
     checkStock();
     
@@ -111,11 +151,32 @@ cashNumber.addEventListener('keydown', e => {
   || e.key === 'E'
   || e.key === '+'
   || e.key === '-') e.preventDefault();
+
+  if (e.key === 'Enter') {
+    purchase();
+    e.preventDefault();
+  }
+
+  setTimeout(predictChange, 100)
 })
 cashNumber.addEventListener('paste', e => {
   const clipboardData = e.clipboardData.getData('text/plain');
   const digitOnly = /^\d+$/;
   if (!digitOnly.test(clipboardData)) e.preventDefault();
+
+  setTimeout(predictChange, 100)
 })
+
+const predictChange = () => {
+  let calculate = 0;
+  if (cashNumber.value !== '' || cashNumber.value !== null) {
+    calculate = sub(cap(cashNumber.value), price);
+  }
+  if (calculate > 0) {
+    expectedChange.textContent = `Change: $ ${calculate}`;
+    return;
+  }
+  expectedChange.textContent = '';
+}
 
 purchaseButton.addEventListener('click', purchase)
