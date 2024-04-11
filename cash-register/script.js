@@ -38,7 +38,7 @@ const cap = num => Math.floor(num * 100) / 100;
 
 const checkStock = () => {
   let html = '';
-  let total = 0;
+  let total = price;
   cid.forEach(([ el, stock ] , i) => {
     console.log(`${el} remaining: ${stock}`)
     total = add(total, stock);
@@ -49,7 +49,7 @@ const checkStock = () => {
     ${lowerCaseAllExceptFirstLetter(el)}: $${stock}`
   });
   cashInRegister.innerHTML = html;
-  cashInRegister.innerHTML += `<br><br>${total}`
+  cashInRegister.innerHTML += `<br><br>Stock + Price = ${total}`
 }
 
 checkStock();
@@ -59,10 +59,10 @@ const operation = change => {
 
   let themCook = '';
   let queue = new Array(9).fill(0);
+  let emptyStock = false;
 
   // iterate backwards (hi to low)
   for (let i = cid.length -1; i >= 0; i--) {
-    console.log(`Iteration ${i}`)
     // check if the change is still high or equal the denomination
     // and check if the stock is available
     while (change >= denominations[i] && cid[i][1] >= denominations[i]) {
@@ -82,15 +82,17 @@ const operation = change => {
       console.log(`Denom ${cid[i][0]} is out of stock ($ ${cid[i][1]})`);
       continue;
     }
-    // check if the last penny is not in stock
-    if (i === 0 && cid[i][1] < denominations[i]) {
+    // check if the change is still there but the last penny is not in stock
+    if (change > 0 && i === 0 && cid[i][1] < denominations[i]) {
       console.log('No stock left, payment is aborted');
       return '';
     }
-  }
 
-  // check if no stock left on the drawer
-  const emptyStock = cid.every(row => row.every(([ _, element ]) => element === 0))
+    // check if change queue is met, and the last penny is empty
+    // check if no stock left in the drawer
+    if (change === 0 && i === 0 && cid[i][1] === 0)
+      emptyStock = cid.every(([ _, element ]) => element === 0)
+  }
 
   console.log(queue);
   queue.forEach((el, i) => {
@@ -161,8 +163,8 @@ cashNumber.addEventListener('keydown', e => {
 })
 cashNumber.addEventListener('paste', e => {
   const clipboardData = e.clipboardData.getData('text/plain');
-  const digitOnly = /^\d+$/;
-  if (!digitOnly.test(clipboardData)) e.preventDefault();
+  const floatOnly = /^\d+.\d+$/;
+  if (!floatOnly.test(clipboardData)) e.preventDefault();
 
   setTimeout(predictChange, 100)
 })
