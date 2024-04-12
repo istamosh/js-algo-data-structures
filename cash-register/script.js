@@ -43,10 +43,37 @@ const checkStock = () => {
     console.log(`${el} remaining: ${stock}`)
     total = add(total, stock);
 
-    if (i > 0) html += `<br>${lowerCaseAllExceptFirstLetter(el)}: $${stock}`
-    else html += 
-    `<strong>Cashes in the register status:</strong><br>
-    ${lowerCaseAllExceptFirstLetter(el)}: $${stock}`
+    if (i > 0) {
+      if (stock > 0) {
+        html += 
+        `
+        <div class="${el.toLowerCase()}">
+          <img src='' alt='' class=''>
+          ${lowerCaseAllExceptFirstLetter(el)}: $${stock}
+        </div>`
+      }
+      else {
+        html += 
+        `<div class="${el.toLowerCase()} empty">
+          ${lowerCaseAllExceptFirstLetter(el)}: $${stock}
+        </div>`
+      }
+    }
+    else {
+      html += `<strong>Cashes in the register status:</strong>`
+      if (stock > 0) {
+        html += 
+        `<div class="${el.toLowerCase()}">
+          ${lowerCaseAllExceptFirstLetter(el)}: $${stock}
+        </div>`
+      }
+      else {
+        html += 
+        `<div class="${el.toLowerCase()} empty">
+          ${lowerCaseAllExceptFirstLetter(el)}: $${stock}
+        </div>`
+      }
+    } 
   });
   cashInRegister.innerHTML = html;
   cashInRegister.innerHTML += `<br><br>Stock + Price = ${total}`
@@ -139,13 +166,7 @@ const purchase = () => {
       changeDiv.textContent = 'Status: INSUFFICIENT_FUNDS';
     }
     
-
     checkStock();
-    
-    // then gradually going down in accordance to the changes
-    // then reduce the stock based on every changes spent
-    // then describe the changes in a change-due div as a list
-    // if there are any insufficient funds, the changes would be aborted
 }
 
 cashNumber.addEventListener('keydown', e => {

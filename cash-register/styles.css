@@ -1,1 +1,15 @@
-/* styles goes here */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.penny::before {
+    content: "";
+    display: block;
+    background-image: url('https://www.usmint.gov/wordpress/wp-content/uploads/2022/12/2023-lincoln-penny-uncirculated-reverse-300x300.jpg');
+    width: 50px;
+    height: auto;
+    
+}
