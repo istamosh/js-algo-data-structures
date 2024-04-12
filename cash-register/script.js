@@ -37,43 +37,38 @@ const add = (num1, num2) => parseFloat((num1 + num2).toFixed(2));
 const cap = num => Math.floor(num * 100) / 100;
 
 const checkStock = () => {
+  const urls = {
+    'penny': 'https://www.usmint.gov/wordpress/wp-content/uploads/2022/12/2023-lincoln-penny-uncirculated-reverse-300x300.jpg',
+    'nickel': 'https://www.usmint.gov/wordpress/wp-content/uploads/2022/12/2023-jefferson-nickel-uncirculated-reverse-300x300.jpg',
+    'dime': 'https://www.usmint.gov/wordpress/wp-content/uploads/2022/12/2023-roosevelt-dime-uncirculated-reverse-300x300.jpg',
+    'quarter': 'https://www.usmint.gov/wordpress/wp-content/uploads/2023/12/2024-american-women-quarters-coin-pauli-murray-uncirculated-reverse-300x300.jpg',
+    'one': 'https://www.usmint.gov/wordpress/wp-content/uploads/2023/12/2024-native-american-one-dollar-uncirculated-coin-reverse-300x300.jpg',
+    'five': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/US_%245_Series_2006_obverse.jpg/320px-US_%245_Series_2006_obverse.jpg',
+    'ten': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/US10dollarbill-Series_2004A.jpg/320px-US10dollarbill-Series_2004A.jpg',
+    'twenty': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/US_%2420_Series_2006_Obverse.jpg/320px-US_%2420_Series_2006_Obverse.jpg',
+    'one hundred': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Obverse_of_the_series_2009_%24100_Federal_Reserve_Note.jpg/320px-Obverse_of_the_series_2009_%24100_Federal_Reserve_Note.jpg',
+  }
+
   let html = '';
   let total = price;
   cid.forEach(([ el, stock ] , i) => {
     console.log(`${el} remaining: ${stock}`)
     total = add(total, stock);
 
-    if (i > 0) {
-      if (stock > 0) {
-        html += 
-        `
-        <div class="${el.toLowerCase()}">
-          <img src='' alt='' class=''>
-          ${lowerCaseAllExceptFirstLetter(el)}: $${stock}
-        </div>`
-      }
-      else {
-        html += 
-        `<div class="${el.toLowerCase()} empty">
-          ${lowerCaseAllExceptFirstLetter(el)}: $${stock}
-        </div>`
-      }
+    if (stock > 0) {
+      html += 
+      `<div>
+        <img src='${urls[el.toLowerCase()]}' alt='${el.toLowerCase()}' class='${i < 5 ? 'coin' : 'bill'}'>
+        ${lowerCaseAllExceptFirstLetter(el)}: $${stock}
+      </div>`
     }
     else {
-      html += `<strong>Cashes in the register status:</strong>`
-      if (stock > 0) {
-        html += 
-        `<div class="${el.toLowerCase()}">
-          ${lowerCaseAllExceptFirstLetter(el)}: $${stock}
-        </div>`
-      }
-      else {
-        html += 
-        `<div class="${el.toLowerCase()} empty">
-          ${lowerCaseAllExceptFirstLetter(el)}: $${stock}
-        </div>`
-      }
-    } 
+      html += 
+      `<div>
+        <img src='${urls[el.toLowerCase()]}' alt='${el.toLowerCase()}' class='${i < 5 ? 'coin' : 'bill'} empty'>
+        ${lowerCaseAllExceptFirstLetter(el)}: $${stock}
+      </div>`
+    }
   });
   cashInRegister.innerHTML = html;
   cashInRegister.innerHTML += `<br><br>Stock + Price = ${total}`
