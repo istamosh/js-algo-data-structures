@@ -59,14 +59,14 @@ const checkStock = () => {
       html += 
       `<div>
         <img src='${urls[el.toLowerCase()]}' alt='${el.toLowerCase()}' class='${i < 5 ? 'coin' : 'bill'}'>
-        ${lowerCaseAllExceptFirstLetter(el)}: $${stock}
+        ${lowerCaseAllExceptFirstLetter(el)}: <span class='digit'>$ ${stock}</span>
       </div>`
     }
     else {
       html += 
       `<div>
         <img src='${urls[el.toLowerCase()]}' alt='${el.toLowerCase()}' class='${i < 5 ? 'coin' : 'bill'} empty'>
-        ${lowerCaseAllExceptFirstLetter(el)}: $${stock}
+        ${lowerCaseAllExceptFirstLetter(el)}: <span class='digit'>$ ${stock}</span>
       </div>`
     }
   });
@@ -83,19 +83,19 @@ const operation = change => {
   let queue = new Array(9).fill(0);
   let emptyStock = false;
 
+  // map the cid to point the stocks, then merge the elements by adding it
+  let totalStock = cid.map(el => el[1]).reduce((prev, curr) => add(prev, curr));
+
+  if (change > totalStock) return '';
+
   // iterate backwards (hi to low)
   for (let i = cid.length -1; i >= 0; i--) {
-    // check if the change is still high or equal the denomination
-    // and check if the stock is available
     while (change >= denominations[i] && cid[i][1] >= denominations[i]) {
-      // reduce the current stock and reduce the current change
       cid[i][1] = sub(cid[i][1], denominations[i]);
       change = sub(change, denominations[i]);
       console.log(change);
       queue[i] += 1;
     }
-    // check if it's not reached last iterations yet and
-    // has insufficient change OR insufficient stock
     if (i > 0 && (change < denominations[i] || cid[i][1] < denominations[i])) {
       if (change < denominations[i]) {
         console.log(`Skipping from ${denominations[i]}...`)
@@ -104,16 +104,22 @@ const operation = change => {
       console.log(`Denom ${cid[i][0]} is out of stock ($ ${cid[i][1]})`);
       continue;
     }
-    // check if the change is still there but the last penny is not in stock
+
     if (change > 0 && i === 0 && cid[i][1] < denominations[i]) {
       console.log('No stock left, payment is aborted');
       return '';
     }
 
-    // check if change queue is met, and the last penny is empty
-    // check if no stock left in the drawer
     if (change === 0 && i === 0 && cid[i][1] === 0)
       emptyStock = cid.every(([ _, element ]) => element === 0)
+
+    // // check if change is higher than the current denom,
+    // // and change still available
+    // if (change > denominations[i] && change > 0) {
+    //   // count them in a simulator before applying stuff
+    //   let count = 0;
+    //   let total = cid[i][1];
+    // }
   }
 
   console.log(queue);
@@ -191,10 +197,10 @@ const predictChange = () => {
     calculate = sub(cap(cashNumber.value), price);
   }
   if (calculate > 0) {
-    expectedChange.textContent = `Change: $ ${calculate}`;
+    expectedChange.innerHTML = `Change: <span class="digit">$ ${calculate}</span>`;
     return;
   }
-  expectedChange.textContent = '';
+  expectedChange.innerHTML = '';
 }
 
 purchaseButton.addEventListener('click', purchase)
