@@ -84,48 +84,81 @@ const operation = change => {
   let emptyStock = false;
 
   // map the cid to point the stocks, then merge the elements by adding it
-  let totalStock = cid.map(el => el[1]).reduce((prev, curr) => add(prev, curr));
+  let totalStock = cid.map(el => el[1]).reduce((prev, curr) => {
+    console.log('REDUCE: ' + add(prev, curr))
+    return add(prev, curr);
+  });
 
-  if (change > totalStock) return '';
+  if (change > totalStock) {
+    console.log('Op. 1')
+    return '';
+  }
+
+  if (change === totalStock) emptyStock;
 
   // iterate backwards (hi to low)
   for (let i = cid.length -1; i >= 0; i--) {
-    while (change >= denominations[i] && cid[i][1] >= denominations[i]) {
-      cid[i][1] = sub(cid[i][1], denominations[i]);
-      change = sub(change, denominations[i]);
-      console.log(change);
-      queue[i] += 1;
-    }
-    if (i > 0 && (change < denominations[i] || cid[i][1] < denominations[i])) {
-      if (change < denominations[i]) {
-        console.log(`Skipping from ${denominations[i]}...`)
-        continue;
+  //   while (change >= denominations[i] && cid[i][1] >= denominations[i]) {
+  //     cid[i][1] = sub(cid[i][1], denominations[i]);
+  //     change = sub(change, denominations[i]);
+  //     console.log(change);
+  //     queue[i] += 1;
+  //   }
+  //   if (i > 0 && (change < denominations[i] || cid[i][1] < denominations[i])) {
+  //     if (change < denominations[i]) {
+  //       console.log(`Skipping from ${denominations[i]}...`)
+  //       continue;
+  //     }
+  //     console.log(`Denom ${cid[i][0]} is out of stock ($ ${cid[i][1]})`);
+  //     continue;
+  //   }
+
+  //   if (change > 0 && i === 0 && cid[i][1] < denominations[i]) {
+  //     console.log('No stock left, payment is aborted');
+  //     return '';
+  //   }
+
+  //   if (change === 0 && i === 0 && cid[i][1] === 0)
+  //     emptyStock = cid.every(([ _, element ]) => element === 0)
+
+    // check if change is higher than the current denom,
+    // and change still available
+    if (change > denominations[i] && change > 0) {
+      // count them in a simulator before applying stuff
+      let counter = 0;
+      let simulatingCurrentStock = cid[i][1];
+
+      // runs if currStock isn't depleted and currChange is same or higher than denom
+      while (simulatingCurrentStock > 0 && change >= denominations[i]) {
+        // simulates the transaction between cashier and customer
+        // count how many times the money is spent based on the denom
+        simulatingCurrentStock = sub(simulatingCurrentStock, denominations[i]);
+        change = sub(change, denominations[i]);
+        counter++;
+
+        console.log(change);
       }
-      console.log(`Denom ${cid[i][0]} is out of stock ($ ${cid[i][1]})`);
-      continue;
+
+      // if there are 1 or more transactions, apply the changes
+      if (counter > 0) {
+        // this is the vital part
+        denomCount = mult(denominations[i], counter)
+
+        cid[i][1] = sub(cid[i][1], denomCount)
+
+        themCook += ` ${cid[i][0]}: $${denomCount}`
+      }
     }
-
-    if (change > 0 && i === 0 && cid[i][1] < denominations[i]) {
-      console.log('No stock left, payment is aborted');
-      return '';
-    }
-
-    if (change === 0 && i === 0 && cid[i][1] === 0)
-      emptyStock = cid.every(([ _, element ]) => element === 0)
-
-    // // check if change is higher than the current denom,
-    // // and change still available
-    // if (change > denominations[i] && change > 0) {
-    //   // count them in a simulator before applying stuff
-    //   let count = 0;
-    //   let total = cid[i][1];
-    // }
+  }
+  if (change > 0) {
+    console.log('Op. 2')
+    return '';
   }
 
-  console.log(queue);
-  queue.forEach((el, i) => {
-    if (el > 0) themCook += ` ${cid[i][0]}: $${mult(denominations[i], el)}`
-  })
+  // console.log(queue);
+  // queue.forEach((el, i) => {
+  //   if (el > 0) themCook += ` ${cid[i][0]}: $${mult(denominations[i], el)}`
+  // })
 
   if (!emptyStock) return `Status: OPEN${themCook}`;
   else return `Status: CLOSED${themCook}`;
