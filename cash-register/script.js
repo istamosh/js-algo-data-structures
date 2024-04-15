@@ -52,7 +52,6 @@ const checkStock = () => {
   let html = '';
   let total = price;
   cid.forEach(([ el, stock ] , i) => {
-    console.log(`${el} remaining: ${stock}`)
     total = add(total, stock);
 
     if (stock > 0) {
@@ -79,51 +78,26 @@ checkStock();
 const operation = change => {
   const denominations = [0.01, 0.05, 0.1, 0.25, 1, 5, 10, 20, 100];
 
-  let themCook = '';
-  let queue = new Array(9).fill(0);
-  let emptyStock = false;
-
   // map the cid to point the stocks, then merge the elements by adding it
   let totalStock = cid.map(el => el[1]).reduce((prev, curr) => {
-    console.log('REDUCE: ' + add(prev, curr))
     return add(prev, curr);
   });
 
   if (change > totalStock) {
-    console.log('Op. 1')
     return '';
   }
 
-  if (change === totalStock) emptyStock;
+  let themCook = '';
+  let query = new Array(9).fill(0);
+  let emptyStock = false;
+
+  if (change === totalStock) {
+    emptyStock = true;
+  }
 
   // iterate backwards (hi to low)
   for (let i = cid.length -1; i >= 0; i--) {
-  //   while (change >= denominations[i] && cid[i][1] >= denominations[i]) {
-  //     cid[i][1] = sub(cid[i][1], denominations[i]);
-  //     change = sub(change, denominations[i]);
-  //     console.log(change);
-  //     queue[i] += 1;
-  //   }
-  //   if (i > 0 && (change < denominations[i] || cid[i][1] < denominations[i])) {
-  //     if (change < denominations[i]) {
-  //       console.log(`Skipping from ${denominations[i]}...`)
-  //       continue;
-  //     }
-  //     console.log(`Denom ${cid[i][0]} is out of stock ($ ${cid[i][1]})`);
-  //     continue;
-  //   }
-
-  //   if (change > 0 && i === 0 && cid[i][1] < denominations[i]) {
-  //     console.log('No stock left, payment is aborted');
-  //     return '';
-  //   }
-
-  //   if (change === 0 && i === 0 && cid[i][1] === 0)
-  //     emptyStock = cid.every(([ _, element ]) => element === 0)
-
-    // check if change is higher than the current denom,
-    // and change still available
-    if (change > denominations[i] && change > 0) {
+    if (change >= denominations[i] && change > 0) {
       // count them in a simulator before applying stuff
       let counter = 0;
       let simulatingCurrentStock = cid[i][1];
@@ -136,29 +110,25 @@ const operation = change => {
         change = sub(change, denominations[i]);
         counter++;
 
-        console.log(change);
+        console.log(`${cid[i][0].toLowerCase()} is spent, current change: ${change}`);
       }
 
-      // if there are 1 or more transactions, apply the changes
+      // if there are 1 or more transactions, query the changes to the stock later
       if (counter > 0) {
-        // this is the vital part
         denomCount = mult(denominations[i], counter)
 
-        cid[i][1] = sub(cid[i][1], denomCount)
+        query[i] = denomCount;
 
         themCook += ` ${cid[i][0]}: $${denomCount}`
       }
     }
   }
   if (change > 0) {
-    console.log('Op. 2')
     return '';
   }
 
-  // console.log(queue);
-  // queue.forEach((el, i) => {
-  //   if (el > 0) themCook += ` ${cid[i][0]}: $${mult(denominations[i], el)}`
-  // })
+  // deduct the stock with the queries (vital)
+  cid = cid.map((el, i) => [el[0], sub(el[1], query[i])]);
 
   if (!emptyStock) return `Status: OPEN${themCook}`;
   else return `Status: CLOSED${themCook}`;
@@ -167,13 +137,11 @@ const operation = change => {
 const purchase = () => {
     if (cashNumber.value === ''
     || cashNumber.value === null) {
-        console.log('empty')
         return;
     }
 
     // store the value into a variable and trim floating number beyond 2 digits
     const cash = cap(cashNumber.value);
-    console.log(cash)
 
     const changes = sub(cash, price);
 
@@ -186,12 +154,9 @@ const purchase = () => {
       return;
     } else {
       changeDiv.textContent = '';
-      console.log(changes + '<<')
     }
 
     const generate = operation(changes);
-
-    console.log(generate);
 
     if (generate !== '') {
       changeDiv.textContent = `${generate}`
@@ -221,6 +186,9 @@ cashNumber.addEventListener('paste', e => {
   const floatOnly = /^\d+.\d+$/;
   if (!floatOnly.test(clipboardData)) e.preventDefault();
 
+  setTimeout(predictChange, 100)
+})
+cashNumber.addEventListener('input', () => {
   setTimeout(predictChange, 100)
 })
 
