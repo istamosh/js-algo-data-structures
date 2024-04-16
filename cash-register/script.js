@@ -65,12 +65,12 @@ const checkStock = () => {
       html += 
       `<div>
         <img src='${urls[el.toLowerCase()]}' alt='${el.toLowerCase()}' class='${i < 5 ? 'coin' : 'bill'} empty'>
-        ${lowerCaseAllExceptFirstLetter(el)}: <span class='digit'>$ ${stock}</span>
+        <span class='empty-digit'>${lowerCaseAllExceptFirstLetter(el)}: <span class='digit'>$ ${stock}</span></span>
       </div>`
     }
   });
   cashInRegister.innerHTML = html;
-  cashInRegister.innerHTML += `<br><br>Stock + Price = ${total}`
+  // cashInRegister.innerHTML += `<br><br>Stock + Price = ${total}`
 }
 
 checkStock();
@@ -128,7 +128,11 @@ const operation = change => {
   }
 
   // deduct the stock with the queries (vital)
-  cid = cid.map((el, i) => [el[0], sub(el[1], query[i])]);
+  // cid = cid.map((el, i) => [el[0], sub(el[1], query[i])]);
+  for (let i = 0; i < cid.length; i++) {
+    cid[i][1] = sub(cid[i][1], query[i])
+  }
+  
 
   if (!emptyStock) return `Status: OPEN${themCook}`;
   else return `Status: CLOSED${themCook}`;
@@ -146,7 +150,7 @@ const purchase = () => {
     const changes = sub(cash, price);
 
     if (changes < 0) {
-      changeDiv.textContent = 'Status: INSUFFICIENT_FUNDS';
+      changeDiv.textContent = `Status: INSUFFICIENT_FUNDS`;
       alert("Customer does not have enough money to purchase the item")
       return;
     } else if (changes === 0) {
@@ -162,7 +166,7 @@ const purchase = () => {
       changeDiv.textContent = `${generate}`
     }
     else {
-      changeDiv.textContent = 'Status: INSUFFICIENT_FUNDS';
+      changeDiv.textContent = `Status: INSUFFICIENT_FUNDS`;
     }
     
     checkStock();
