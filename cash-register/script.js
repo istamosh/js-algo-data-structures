@@ -50,9 +50,9 @@ const checkStock = () => {
   }
 
   let html = '';
-  let total = price;
+  // let total = price;
   cid.forEach(([ el, stock ] , i) => {
-    total = add(total, stock);
+    // total = add(total, stock);
 
     if (stock > 0) {
       html += 
@@ -79,15 +79,12 @@ const operation = change => {
   const denominations = [0.01, 0.05, 0.1, 0.25, 1, 5, 10, 20, 100];
 
   // map the cid to point the stocks, then merge the elements by adding it
-  let totalStock = cid.map(el => el[1]).reduce((prev, curr) => {
-    return add(prev, curr);
-  });
+  let totalStock = cid.map(el => el[1]).reduce((prev, curr) => add(prev, curr));
 
   if (change > totalStock) {
     return '';
   }
 
-  let themCook = '';
   let query = new Array(9).fill(0);
   let emptyStock = false;
 
@@ -109,17 +106,11 @@ const operation = change => {
         simulatingCurrentStock = sub(simulatingCurrentStock, denominations[i]);
         change = sub(change, denominations[i]);
         counter++;
-
-        console.log(`${cid[i][0].toLowerCase()} is spent, current change: ${change}`);
       }
 
       // if there are 1 or more transactions, query the changes to the stock later
       if (counter > 0) {
-        denomCount = mult(denominations[i], counter)
-
-        query[i] = denomCount;
-
-        themCook += ` ${cid[i][0]}: $${denomCount}`
+        query[i] = mult(denominations[i], counter)
       }
     }
   }
@@ -127,49 +118,48 @@ const operation = change => {
     return '';
   }
 
-  // deduct the stock with the queries (vital)
-  // cid = cid.map((el, i) => [el[0], sub(el[1], query[i])]);
-  for (let i = 0; i < cid.length; i++) {
-    cid[i][1] = sub(cid[i][1], query[i])
-  }
-  
+  let themCook = '';
+  cid.forEach(([denom, val], i) => {
+    cid[i][1] = sub(val, query[i]);
+    themCook += ` ${denom}: $${query[i]}`;
+  });
 
   if (!emptyStock) return `Status: OPEN${themCook}`;
   else return `Status: CLOSED${themCook}`;
 }
 
 const purchase = () => {
-    if (cashNumber.value === ''
-    || cashNumber.value === null) {
-        return;
-    }
-
-    // store the value into a variable and trim floating number beyond 2 digits
-    const cash = cap(cashNumber.value);
-
-    const changes = sub(cash, price);
-
-    if (changes < 0) {
-      changeDiv.textContent = `Status: INSUFFICIENT_FUNDS`;
-      alert("Customer does not have enough money to purchase the item")
+  if (cashNumber.value === ''
+  || cashNumber.value === null) {
       return;
-    } else if (changes === 0) {
-      changeDiv.textContent = "No change due - customer paid with exact cash";
-      return;
-    } else {
-      changeDiv.textContent = '';
-    }
+  }
 
-    const generate = operation(changes);
+  // store the value into a variable and trim floating number beyond 2 digits
+  const cash = cap(cashNumber.value);
 
-    if (generate !== '') {
-      changeDiv.textContent = `${generate}`
-    }
-    else {
-      changeDiv.textContent = `Status: INSUFFICIENT_FUNDS`;
-    }
-    
-    checkStock();
+  const changes = sub(cash, price);
+
+  if (changes < 0) {
+    changeDiv.textContent = 'Status: INSUFFICIENT_FUNDS';
+    alert("Customer does not have enough money to purchase the item")
+    return;
+  } else if (changes === 0) {
+    changeDiv.textContent = "No change due - customer paid with exact cash";
+    return;
+  } else {
+    changeDiv.textContent = '';
+  }
+
+  const generate = operation(changes);
+
+  if (generate !== '') {
+    changeDiv.textContent = `${generate}`;
+  }
+  else {
+    changeDiv.textContent = 'Status: INSUFFICIENT_FUNDS';
+  }
+  
+  checkStock();
 }
 
 cashNumber.addEventListener('keydown', e => {
