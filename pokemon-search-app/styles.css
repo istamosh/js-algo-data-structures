@@ -1,7 +1,33 @@
+.main {
+    width: 66vw;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+h1 {
+    margin: 0;
+}
+
 #status-bar {
     width: 25px;
     height: 25px;
     border-radius: 50%;
     
     background-color: darkgray;
+}
+
+#card-portrait {
+    width: 350px;
+    height: 491px;
+    border-radius: 15px;
+    border: 1px solid darkblue;
+}
+
+#card-portrait img {
+    width: 100%;
 }
