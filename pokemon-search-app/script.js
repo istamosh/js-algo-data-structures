@@ -53,32 +53,34 @@ const execute = () => {
     const value = parseInt(inputBox.value)
 
     const hehe = data.results.find(el => el.id === value)
+    if (!hehe) {
+        alert('Pokémon not found');
+        return
+    }
     console.log(hehe)
 
     fetchPokemonData(hehe.url);
 }
 
 const displayPokemon = data => {
+    // retrieve types (plural)
+    const types = data.types.map(el => el.type).map(el => el.name).join(" and ")
+    console.log(types)
     // retrieve HP, ATK, DEF, SPC ATK, SPC DEF, SPD
     const base_stats = data.stats.map(el => el.base_stat)
     console.log(base_stats)
 
     const pointer = [
-        "name", 
-        "id", 
-        "weight", 
-        "height", 
-        "types", 
-        "stats[0].base_stat", 
-        "stats[1].base_stat", 
-        "stats[2].base_stat", 
-        "stats[3].base_stat",
-        "stats[4].base_stat",
-        "stats[5].base_stat"
+        data.name, 
+        data.id, 
+        data.weight, 
+        data.height, 
+        types
     ]
+    pointer.push.apply(pointer, base_stats)
     
     pElements.forEach((element, i) => {
-        element.textContent = data[pointer[i]];
+        element.textContent = pointer[i];
     });
 }
 
@@ -87,4 +89,9 @@ inputBox.addEventListener('keydown', e => {
         execute();
         e.preventDefault();
     }
+})
+
+searchButton.addEventListener('click', e => {
+    execute()
+    e.preventDefault()
 })
