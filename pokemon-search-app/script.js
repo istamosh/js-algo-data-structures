@@ -6,6 +6,7 @@ const statusBar = document.getElementById('status-bar');
 const inputBox = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
 const pElements = document.querySelectorAll('#card-portrait p');
+const divTypes = document.getElementById('types');
 
 const fetchData = async () => {
     fetched = false;
@@ -62,10 +63,27 @@ const execute = () => {
     fetchPokemonData(hehe.url);
 }
 
+const search = async () => {
+    try {
+        input = inputBox.value.toLowerCase();
+
+        resp = await fetch(`${api}/${input}`);
+        data = await resp.json();
+
+        displayPokemon(data);
+    }
+    catch (err) {
+        alert('Pokémon not found');
+        console.log('Pokémon not found: ' + err);
+    }
+}
+
 const displayPokemon = data => {
     // retrieve types (plural)
-    const types = data.types.map(el => el.type).map(el => el.name).join(" and ")
-    console.log(types)
+    const types = data.types
+        .map(el => `<p class="type ${el.type.name}">${el.type.name}</p>`)
+        .join('');
+
     // retrieve HP, ATK, DEF, SPC ATK, SPC DEF, SPD
     const base_stats = data.stats.map(el => el.base_stat)
     console.log(base_stats)
@@ -74,14 +92,16 @@ const displayPokemon = data => {
         data.name, 
         data.id, 
         data.weight, 
-        data.height, 
-        types
+        data.height
+        // , types
     ]
     pointer.push.apply(pointer, base_stats)
     
     pElements.forEach((element, i) => {
         element.textContent = pointer[i];
     });
+
+    divTypes.innerHTML = types;
 }
 
 inputBox.addEventListener('keydown', e => {
@@ -92,6 +112,6 @@ inputBox.addEventListener('keydown', e => {
 })
 
 searchButton.addEventListener('click', e => {
-    execute()
-    e.preventDefault()
+    e.preventDefault() // prevent multiple successions
+    search()
 })
