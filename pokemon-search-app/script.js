@@ -5,8 +5,18 @@ const api = 'https://pokeapi-proxy.freecodecamp.rocks/api/pokemon';
 const statusBar = document.getElementById('status-bar');
 const inputBox = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
-const pElements = document.querySelectorAll('#card-portrait p');
-const divTypes = document.getElementById('types');
+const divElements = document.querySelectorAll('#card-portrait div');
+
+const name = document.getElementById('pokemon-name');
+const id = document.getElementById('pokemon-id');
+const weight = document.getElementById('weight');
+const height = document.getElementById('height');
+const hp = document.getElementById('hp');
+const attack = document.getElementById('attack');
+const defense = document.getElementById('defense');
+const spcAttack = document.getElementById('special-attack');
+const spcDefense = document.getElementById('special-defense');
+const speed = document.getElementById('speed');
 
 const fetchData = async () => {
     fetched = false;
@@ -37,19 +47,6 @@ const fetchPokemonData = async url => {
     }
 }
 
-let data;
-fetchData()
-    .then(res => {
-        statusBar.style.backgroundColor = 'limegreen'
-        
-        data = res;
-        console.log(data.results)
-    })
-    .catch(err => {
-        console.log(err)
-        statusBar.style.backgroundColor = 'firebrick'
-    })
-
 const execute = () => {
     const value = parseInt(inputBox.value)
 
@@ -69,8 +66,33 @@ const search = async () => {
 
         resp = await fetch(`${api}/${input}`);
         data = await resp.json();
+        console.log(data)
 
-        displayPokemon(data);
+        const img = `<img src="${data.sprites.front_default}" alt="" id="sprite">`
+        const types = data.types
+        .map(el => `<p class="type ${el.type.name}">${el.type.name.toUpperCase()}</p>`)
+        .join('');
+        const base_stats = data.stats.map(el => el.base_stat)
+        const pointer = [
+            data.name.toUpperCase(), 
+            data.id, 
+            data.weight, 
+            data.height,
+            img,
+            types
+        ]
+        pointer.push.apply(pointer, base_stats)
+
+        divElements.forEach((el, i) => {
+            if (i === 4 || i === 5) {
+                el.innerHTML = pointer[i];
+            }
+            else {
+                el.textContent = pointer[i];
+            }
+        });
+
+        
     }
     catch (err) {
         alert('Pokémon not found');
@@ -78,40 +100,18 @@ const search = async () => {
     }
 }
 
-const displayPokemon = data => {
-    // retrieve types (plural)
-    const types = data.types
-        .map(el => `<p class="type ${el.type.name}">${el.type.name}</p>`)
-        .join('');
-
-    // retrieve HP, ATK, DEF, SPC ATK, SPC DEF, SPD
-    const base_stats = data.stats.map(el => el.base_stat)
-    console.log(base_stats)
-
-    const pointer = [
-        data.name, 
-        data.id, 
-        data.weight, 
-        data.height
-        // , types
-    ]
-    pointer.push.apply(pointer, base_stats)
-    
-    pElements.forEach((element, i) => {
-        element.textContent = pointer[i];
-    });
-
-    divTypes.innerHTML = types;
-}
+const clear = () => { divElements.forEach(el => {el.innerHTML = ''})}
 
 inputBox.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && data) {
-        execute();
+    if (e.key === 'Enter') {
         e.preventDefault();
+        clear()
+        search();
     }
 })
 
 searchButton.addEventListener('click', e => {
     e.preventDefault() // prevent multiple successions
+    clear()
     search()
 })
