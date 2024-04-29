@@ -5,41 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokemon Search App</title>
 
-    <link rel="stylesheet" href="styles.css">    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
     <div class="main">
         <div class="header">
             <h1>Pokemon Search App</h1>
-            <div id="status-bar"></div>
         </div>
 
-        <div class="content">
-            <div id="input-area">
-                <input type="text" id="search-input" required>
-                <button id="search-button">Find Pokemon!</button>
+        <div id="input-area">
+            <input type="text" id="search-input" required autocomplete="off">
+            <button id="search-button">Find Pokemon!</button>
+        </div>
+
+        <div id="card-portrait">
+            <div class="card-back">
+                <i class="fa-solid fa-question fa-10x"></i>
             </div>
-            <div id="card-portrait">
-                <img src="https://upload.wikimedia.org/wikipedia/en/3/3b/Pokemon_Trading_Card_Game_cardback.jpg" alt="cardback-from-wikipedia">
-            
-                <div id="pokemon-name"></div>
-                <div id="pokemon-id"></div>
-                <div id="weight"></div>
-                <div id="height"></div>
-                <div id="image"></div>
-                <div id="types"></div>
-                <div id="hp"></div>
-                <div id="attack"></div>
-                <div id="defense"></div>
-                <div id="special-attack"></div>
-                <div id="special-defense"></div>
-                <div id="speed"></div>
-            </div>
+        
+            <div id="pokemon-name"></div>
+            <div id="pokemon-id"></div>
+            <div id="weight"></div>
+            <div id="height"></div>
+            <div id="image"></div>
+            <div id="types"></div>
+            <div id="hp"></div>
+            <div id="attack"></div>
+            <div id="defense"></div>
+            <div id="special-attack"></div>
+            <div id="special-defense"></div>
+            <div id="speed"></div>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
-
-<!-- <img src="${data.sprites.front_default}" alt="" id="sprite"> -->

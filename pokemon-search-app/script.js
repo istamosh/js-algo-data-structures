@@ -2,7 +2,6 @@
 // that contains pokemon id, name, and its url
 const api = `https://pokeapi-proxy.freecodecamp.rocks/api/pokemon/`;
 
-const statusBar = document.getElementById('status-bar');
 const inputBox = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
 const divElements = document.querySelectorAll('#card-portrait div');
