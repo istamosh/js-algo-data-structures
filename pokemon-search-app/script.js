@@ -4,7 +4,9 @@ const api = `https://pokeapi-proxy.freecodecamp.rocks/api/pokemon/`;
 
 const inputBox = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
-const divElements = document.querySelectorAll('#card-portrait div');
+const cardBack = document.getElementsByClassName('card-back');
+
+const divElements = document.querySelectorAll('#card-portrait div:not(.card-back)');
 
 const search = async () => {
     try {
@@ -40,6 +42,8 @@ const tabulate = data => {
     ]
     pointer.push.apply(pointer, base_stats)
     
+    cardBack[0].style.display = 'none'
+
     divElements.forEach((element, i) => {
         if (i === 4 || i === 5) {
             element.innerHTML = pointer[i];
@@ -50,7 +54,12 @@ const tabulate = data => {
     });
 }
 
-const clear = () => { divElements.forEach(el => {el.innerHTML = ''})}
+const clear = () => { 
+    divElements.forEach(el => {
+        el.innerHTML = '';
+        cardBack[0].style.display = 'block'
+    })
+}
 
 inputBox.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
