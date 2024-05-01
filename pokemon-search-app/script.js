@@ -7,6 +7,11 @@ const searchButton = document.getElementById('search-button');
 const cardBack = document.getElementsByClassName('card-back');
 
 const divElements = document.querySelectorAll('#card-portrait div:not(.card-back)');
+const sections = document.querySelectorAll('#card-portrait section')
+
+sections.forEach(element => {
+    element.style.visibility = 'hidden'
+});
 
 const search = async () => {
     try {
@@ -32,6 +37,7 @@ const tabulate = data => {
     .join('');
     const base_stats = data.stats.map(el => el.base_stat)
 
+    // name,id,wt,ht,img,type,hp,atk,def,spcatk,spcdef,spd
     const pointer = [
         data.name.toUpperCase(),
         data.id,
@@ -43,6 +49,10 @@ const tabulate = data => {
     pointer.push.apply(pointer, base_stats)
     
     cardBack[0].style.display = 'none'
+
+    sections.forEach(element => {
+        element.style.visibility = 'visible'
+    });
 
     divElements.forEach((element, i) => {
         if (i === 4 || i === 5) {
@@ -72,3 +82,12 @@ searchButton.addEventListener('click', e => {
     e.preventDefault(); // prevent multiple successions
     search();
 })
+
+// const autoScroll = () => {
+//     document.getElementById('pokemon-name').animate({
+//         scroll
+//     })
+// }
+
+// --- finding longest pokemon name in apicall
+// --- result: squawkabilly-yellow-plumage (ID: 10261)
