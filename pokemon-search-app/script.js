@@ -50,12 +50,20 @@ const tabulate = data => {
     
     cardBack[0].style.display = 'none'
 
+    
+
     sections.forEach(element => {
         element.style.visibility = 'visible'
     });
 
     divElements.forEach((element, i) => {
-        if (i === 4 || i === 5) {
+        if (i === 0) {
+            element.textContent = pointer[i];
+
+            const textWidth = element.textContent.length * 22;
+            document.getElementById('pokemon-name').style.width = textWidth +'px';
+        }
+        else if (i === 4 || i === 5) {
             element.innerHTML = pointer[i];
         }
         else {
