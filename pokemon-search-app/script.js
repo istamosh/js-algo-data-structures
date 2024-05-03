@@ -75,7 +75,8 @@ const tabulate = data => {
 const clear = () => { 
     divElements.forEach(el => {
         el.innerHTML = '';
-        cardBack[0].style.display = 'block'
+        // remove sprite
+        cardBack[0].style.display = 'block';
     })
 }
 
