@@ -15,7 +15,7 @@
         </div>
 
         <div id="input-area">
-            <input type="text" id="search-input" required autocomplete="off">
+            <input type="text" id="search-input" required autocomplete="off" spellcheck="false">
             <button id="search-button">Find Pokemon!</button>
         </div>
 
@@ -30,9 +30,14 @@
                 <div id="pokemon-name" class="b-font"></div>
             </marquee>
             
-            <div id="pokemon-id"></div>
-            <div id="weight"></div>
-            <div id="height"></div>
+            <section id="energy-icons"></section>
+
+            <section id="id-section">
+                <span>&numero;.</span><div id="pokemon-id"></div>
+                <span>Weight:</span><div id="weight"></div>
+                <span>Height:</span><div id="height"></div>
+            </section>
+            
             <div id="image"></div>
             <div id="types"></div>
 
@@ -42,11 +47,23 @@
                 <i class="icon"></i>
             </section>
 
-            <div id="attack"></div>
-            <div id="defense"></div>
-            <div id="special-attack"></div>
-            <div id="special-defense"></div>
-            <div id="speed"></div>
+            <section id="attributes-section">
+                <section class="atk-section">
+                    <span>ATK</span><div id="attack" class="xl-font normal-weight"></div>
+                </section>
+                <section class="def-section">
+                    <span>DEF</span><div id="defense" class="xl-font normal-weight"></div>
+                </section>
+                <section class="satk-section">
+                    <span>SPC. ATTACK</span><div id="special-attack" class="xl-font normal-weight"></div>
+                </section>
+                <section class="sdef-section">
+                    <span>SPC. DEFENSE</span><div id="special-defense" class="xl-font normal-weight"></div>
+                </section>
+                <section class="spd-section">
+                    <span>SPEED</span><div id="speed" class="xl-font normal-weight"></div>
+                </section>
+            </section>
         </div>
     </div>
 

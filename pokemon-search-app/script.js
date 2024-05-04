@@ -4,13 +4,14 @@ const api = `https://pokeapi-proxy.freecodecamp.rocks/api/pokemon/`;
 
 const inputBox = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
-const cardBack = document.getElementsByClassName('card-back');
 
-const divElements = document.querySelectorAll('#card-portrait div:not(.card-back)');
-const sections = document.querySelectorAll('#card-portrait section')
+const cardBack = document.querySelector('.card-back');
+const divElements = document.querySelectorAll('#card-portrait div:not(.card-back, .icon-container)');
+const cardContents = document.querySelectorAll('#card-portrait *:not(.card-back, .icon-container, .gg-pokemon)');
 
-sections.forEach(element => {
-    element.style.visibility = 'hidden'
+// hide all the contents first
+cardContents.forEach(element => {
+    element.style.visibility = 'hidden';
 });
 
 const search = async () => {
@@ -19,7 +20,6 @@ const search = async () => {
 
         const resp = await fetch(`${api}${input}`);
         const data = await resp.json();
-        console.log(data)
 
         tabulate(data)
     }
@@ -48,19 +48,23 @@ const tabulate = data => {
     ]
     pointer.push.apply(pointer, base_stats)
     
-    cardBack[0].style.display = 'none'
-
-    
-
-    sections.forEach(element => {
+    // flip the card
+    cardBack.style.display = 'none'
+    cardContents.forEach(element => {
         element.style.visibility = 'visible'
     });
 
+    // main icon for HP section
+    const mainIcon = document.querySelector('.icon');
+    mainIcon.innerHTML = `<i class="energy ${data.types.map(el => el.type.name)[0]}-icon"></i>`;
+
+    // apply the content values
     divElements.forEach((element, i) => {
         if (i === 0) {
             element.textContent = pointer[i];
 
-            const textWidth = element.textContent.length * 22;
+            // set enough width of name
+            const textWidth = element.textContent.length * 23;
             document.getElementById('pokemon-name').style.width = textWidth +'px';
         }
         else if (i === 4 || i === 5) {
@@ -70,14 +74,30 @@ const tabulate = data => {
             element.textContent = pointer[i];
         }
     });
+
+     // placing energy icons
+    const energies = data.types
+        .map(el => `<i class="energy ${el.type.name}-icon"></i>`)
+        .join('');
+    document.getElementById('energy-icons').innerHTML = energies;
+
+    // set energy icon shadows
+    document.querySelectorAll('.energy').forEach(el => {
+        el.style.boxShadow = `0 0 10px ${window.getComputedStyle(el).getPropertyValue('background-color')}`;
+    })
+
+    // set frame color according to pokemon type
+    const mainColor = window.getComputedStyle(mainIcon.querySelector('.energy')).getPropertyValue('background-color');
+    document.getElementById('image').style.border = `1px solid ${mainColor}`;
+    document.getElementById('image').style.boxShadow = `inset 0 0 75px ${mainColor}`;
 }
 
 const clear = () => { 
-    divElements.forEach(el => {
-        el.innerHTML = '';
-        // remove sprite
-        cardBack[0].style.display = 'block';
-    })
+    cardContents.forEach(element => {
+        element.style.visibility = 'hidden';
+    });
+    // flip back
+    cardBack.style.display = null;
 }
 
 inputBox.addEventListener('keydown', e => {
@@ -91,12 +111,6 @@ searchButton.addEventListener('click', e => {
     e.preventDefault(); // prevent multiple successions
     search();
 })
-
-// const autoScroll = () => {
-//     document.getElementById('pokemon-name').animate({
-//         scroll
-//     })
-// }
 
 // --- finding longest pokemon name in apicall
 // --- result: squawkabilly-yellow-plumage (ID: 10261)
