@@ -1,34 +1,61 @@
-let entry = [];
+const table = document.querySelector('table');
+
+let storageArray = [];
+
+const tabulateData = (array) => {
+    array.forEach(element => {
+        table.innerHTML += `
+        <tr>
+            <th>${element.id}</th>
+            <td>${element.desc}</td>
+            <td><button id="update-btn">Edit</button></td>
+            <td><button id="delete-btn">Hapus</button></td>
+        </tr>`
+    });
+}
 
 const create = () => {
     // detect vacant id
     let id = 0
-    if (entry.length !== 0) 
-        for (let i = 0; i < entry.length; i++) 
-        i === entry[i].id 
-        ? id++ 
-        : id = i;
-    
+    if (storageArray) {
+        for (let i = 0; i < storageArray.length; i++) {
+            if (i === storageArray[i].id) {
+                id++;
+            }
+            else {
+                id = i;
+            }
+        }
+    }
+        
     // desc preset
     const desc = `Kegiatan ${id +1}`
     // store entry
     const newEntry = {
         id: id,
         desc: desc
-    }
+    };
 
-    document.querySelector('table').innerHTML += `
-    <tr>
-        <th>${id}</th>
-        <td>${desc}</td>
-        <td><button id="update-btn">Edit</button></td>
-        <td><button id="delete-btn">Hapus</button></td>
-    </tr>`
+    // save the entry into array of obj and serialize it into the localStorage
+    storageArray.push(newEntry);
+    localStorage.setItem('localDb', JSON.stringify(storageArray))
+    console.log(`Successfully stored! Data => ${JSON.stringify(storageArray)}`)
 
-    entry.push(newEntry)
-    // localStorage.setItem("localDb", JSON.stringify(newEntry))
-    console.log(`Created!, ${JSON.stringify(entry)}`)
+    // display only newly created data
+    tabulateData(new Array(newEntry));
 }
+
+const read = () => {
+    const hehe = JSON.parse(localStorage.getItem('localDb'));
+    console.log(hehe);
+    // localStorage.clear();
+    if (hehe) {
+        storageArray = hehe;
+        tabulateData(storageArray);
+    }
+}
+// trigger read on page loading
+document.addEventListener('DOMContentLoaded', read());
 
 const testing = () => {
     let objArr = [
