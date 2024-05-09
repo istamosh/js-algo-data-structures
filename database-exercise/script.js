@@ -18,8 +18,8 @@ const tabulateData = (array) => {
         table.innerHTML += `
         <tr>
             <th>${element.id}</th>
-            <td>${element.desc}</td>
-            <td><button id="update-btn">Edit</button></td>
+            <td id="description-${element.id}">${element.desc}</td>
+            <td><button id="update-btn" onclick="editButton(${element.id})">Edit</button></td>
             <td><button id="delete-btn" onclick="deleteEntry(${element.id})">Hapus</button></td>
         </tr>`
     });
@@ -71,6 +71,13 @@ document.addEventListener('DOMContentLoaded', () => {
     prepareHeader();
     read();
 });
+
+const editButton = () => {
+
+}
+const update = () => {
+
+}
 
 const deleteEntry = index => {
     // point and delete database entry by index
