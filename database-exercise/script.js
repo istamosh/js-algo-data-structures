@@ -23,7 +23,7 @@ const tabulateData = (array) => {
             <tr id="row-${element.id}">
                 <th id="number">${element.id +1}</th>
                 <td id="description-${element.id}">${element.desc}</td>
-                <td><button id="update-btn" onclick="editButton(${element.id})">Edit</button></td>
+                <td><button id="update-btn-${element.id}" onclick="editButton(${element.id})">Edit</button></td>
                 <td><button id="delete-btn" onclick="deleteEntry(${element.id})">Hapus</button></td>
             </tr>
         </tbody>
@@ -65,7 +65,7 @@ const create = () => {
         <tr id="row-${id}">
             <th id="number">${id +1}</th>
             <td id="description-${id}">${desc}</td>
-            <td><button id="update-btn" onclick="editButton(${id})">Edit</button></td>
+            <td><button id="update-btn-${id}" onclick="editButton(${id})">Edit</button></td>
             <td><button id="delete-btn" onclick="deleteEntry(${id})">Hapus</button></td>
         </tr>
     </tbody>
@@ -92,16 +92,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const editButton = (i) => {
     const activityBox = document.getElementById(`description-${i}`);
-    const hehe = activityBox.innerText
+    const textInput = activityBox.innerText
     activityBox.innerText = ""
     
     activityBox.innerHTML += 
     `
     <div id="div-${i}">
-        <textarea spellcheck="false" id="textarea-${i}" rows="2" placeholder="Press Alt+S to save...">${hehe}</textarea>
-        <button id="update-btn" onclick="update(${i})" accesskey="s">Save</button>
+        <textarea spellcheck="false" id="textarea-${i}" rows="2" placeholder="Press Alt+S to save...">${textInput}</textarea>
+        <button id="save-btn" onclick="update(${i})" accesskey="s">Save</button>
     </div>
     `
+
+    document.getElementById(`update-btn-${i}`).disabled = true;
 }
 const update = (i) => {
     const content = document.getElementById(`textarea-${i}`);
@@ -122,6 +124,9 @@ const update = (i) => {
 
         // apply value from textarea
         activityBox.innerText = content.value;
+
+        // reenable the edit button
+        document.getElementById(`update-btn-${i}`).disabled = false;
 
         // tabulateData(storageArray);
     }
@@ -163,7 +168,7 @@ const testing = () => {
     }
 }
 
-const clearLocalStorage = () => {
-    localStorage.clear();
-    console.log('localStorage cleared!, refresh page to take effect');
-}
+// const clearLocalStorage = () => {
+//     localStorage.clear();
+//     console.log('localStorage cleared!, refresh page to take effect');
+// }
