@@ -4,24 +4,30 @@ let storageArray = [];
 
 const prepareHeader = () => {
     table.innerHTML = `
-    <tr>
-        <th>#</th>
-        <th>Nama Kegiatan</th>
-        <th>Edit Kegiatan</th>
-        <th>Hapus Kegiatan</th>
-    </tr>`;
+    <tbody>
+        <tr>
+            <th>#</th>
+            <th>Nama Kegiatan</th>
+            <th>Edit Kegiatan</th>
+            <th>Hapus Kegiatan</th>
+        </tr>
+    </tbody>
+    `;
 }
 
 const tabulateData = (array) => {
     prepareHeader();
     array.forEach(element => {
         table.innerHTML += `
-        <tr>
-            <th>${element.id}</th>
-            <td id="description-${element.id}">${element.desc}</td>
-            <td><button id="update-btn" onclick="editButton(${element.id})">Edit</button></td>
-            <td><button id="delete-btn" onclick="deleteEntry(${element.id})">Hapus</button></td>
-        </tr>`
+        <tbody>
+            <tr id="row-${element.id}">
+                <th id="number">${element.id +1}</th>
+                <td id="description-${element.id}">${element.desc}</td>
+                <td><button id="update-btn" onclick="editButton(${element.id})">Edit</button></td>
+                <td><button id="delete-btn" onclick="deleteEntry(${element.id})">Hapus</button></td>
+            </tr>
+        </tbody>
+        `
     });
 }
 
@@ -53,7 +59,19 @@ const create = () => {
     localStorage.setItem('localDb', JSON.stringify(storageArray))
     console.log(`Successfully stored! Data => ${JSON.stringify(storageArray)}`)
 
-    tabulateData(storageArray);
+    // display the newly created row
+    table.innerHTML += `
+    <tbody>
+        <tr id="row-${id}">
+            <th id="number">${id +1}</th>
+            <td id="description-${id}">${desc}</td>
+            <td><button id="update-btn" onclick="editButton(${id})">Edit</button></td>
+            <td><button id="delete-btn" onclick="deleteEntry(${id})">Hapus</button></td>
+        </tr>
+    </tbody>
+    `
+
+    // tabulateData(storageArray);
 }
 
 const read = () => {
@@ -74,39 +92,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const editButton = (i) => {
     const activityBox = document.getElementById(`description-${i}`);
-
-    activityBox.innerHTML += `
+    const hehe = activityBox.innerText
+    activityBox.innerText = ""
+    
+    activityBox.innerHTML += 
+    `
     <div id="div-${i}">
-        <input type="text" id="text-${i}" onkeydown="keyDown(event, ${i})">
-        <button id="save-btn-${i}" onclick="update(${i})">Save</button>
+        <textarea spellcheck="false" id="textarea-${i}" rows="2" placeholder="Press Alt+S to save...">${hehe}</textarea>
+        <button id="update-btn" onclick="update(${i})" accesskey="s">Save</button>
     </div>
     `
 }
-// redirect function when user presses Enter key
-const keyDown = (e, i) => {
-    if (e.key === 'Enter') {
-        update(i);
+const update = (i) => {
+    const content = document.getElementById(`textarea-${i}`);
+    
+    const pointer = storageArray.map(el => el.id).indexOf(i)
+    if (i !== -1) {
+        // remove entry started from index no. and amount of deletion starting from there
+        storageArray[pointer].desc = `${content.value}`;
+
+        // apply the update into db
+        localStorage.setItem('localDb', JSON.stringify(storageArray))
+        console.log(`Successfully updated! Data => ${JSON.stringify(storageArray)}`)
+    
+        // find the activity bar then delete the edit form
+        const activityBox = document.getElementById(`description-${i}`);
+        const div = document.getElementById(`div-${i}`);
+        div.remove();
+
+        // apply value from textarea
+        activityBox.innerText = content.value;
+
+        // tabulateData(storageArray);
     }
 }
-const update = (i) => {
-    console.log(`hehe ${i}`)
-}
 
-const deleteEntry = index => {
+const deleteEntry = i => {
     // point and delete database entry by index
     // map: [id:1, id:2, id:3, ...]
     // indexOf(3) = id:3 which is index no.2
     // therefore pointer is pointing at 2
-    const pointer = storageArray.map(el => el.id).indexOf(index)
-    if (index !== -1) {
+    const pointer = storageArray.map(el => el.id).indexOf(i)
+    if (i !== -1) {
         // remove entry started from index no. and amount of deletion starting from there
         storageArray.splice(pointer, 1);
         localStorage.setItem('localDb', JSON.stringify(storageArray))
-        console.log(`Successfully delete! Data => ${JSON.stringify(storageArray)}`)
+        console.log(`Successfully deleted! Data => ${JSON.stringify(storageArray)}`)
+
+        // remove the said data
+        document.getElementById(`row-${i}`).parentNode.remove();
     }
 
     // update the display
-    tabulateData(storageArray);
+    // tabulateData(storageArray);
 }
 
 const testing = () => {
@@ -124,11 +162,6 @@ const testing = () => {
         console.log(objArr[i].id)
     }
 }
-
-document.getElementById('create-btn').addEventListener('click', e => {
-    e.preventDefault()
-    create()
-})
 
 const clearLocalStorage = () => {
     localStorage.clear();
