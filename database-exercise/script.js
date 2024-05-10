@@ -72,11 +72,24 @@ document.addEventListener('DOMContentLoaded', () => {
     read();
 });
 
-const editButton = () => {
+const editButton = (i) => {
+    const activityBox = document.getElementById(`description-${i}`);
 
+    activityBox.innerHTML += `
+    <div id="div-${i}">
+        <input type="text" id="text-${i}" onkeydown="keyDown(event, ${i})">
+        <button id="save-btn-${i}" onclick="update(${i})">Save</button>
+    </div>
+    `
 }
-const update = () => {
-
+// redirect function when user presses Enter key
+const keyDown = (e, i) => {
+    if (e.key === 'Enter') {
+        update(i);
+    }
+}
+const update = (i) => {
+    console.log(`hehe ${i}`)
 }
 
 const deleteEntry = index => {

@@ -18,3 +18,16 @@ table {
   tr:nth-child(even) {
     background-color: #dddddd;
   }
+
+  [id^="description"] {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  [id^="div"] {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  [id^="text"] {
+    width: 100%;
+  }
