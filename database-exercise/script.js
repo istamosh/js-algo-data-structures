@@ -1,15 +1,16 @@
-const table = document.querySelector('table');
-
+let namePreset = `Activity`;
 let storageArray = [];
+
+const table = document.querySelector('table');
 
 const prepareHeader = () => {
     table.innerHTML = `
     <tbody>
         <tr>
-            <th>#</th>
-            <th>Nama Kegiatan</th>
-            <th>Edit Kegiatan</th>
-            <th>Hapus Kegiatan</th>
+            <th>No.</th>
+            <th>Activity Name</th>
+            <th>Edit Activity</th>
+            <th>Delete Activity</th>
         </tr>
     </tbody>
     `;
@@ -24,7 +25,7 @@ const tabulateData = (array) => {
                 <th id="number">${element.id +1}</th>
                 <td id="description-${element.id}">${element.desc}</td>
                 <td><button id="update-btn-${element.id}" onclick="editButton(${element.id})">Edit</button></td>
-                <td><button id="delete-btn" onclick="deleteEntry(${element.id})">Hapus</button></td>
+                <td><button id="delete-btn" onclick="deleteEntry(${element.id})">Delete</button></td>
             </tr>
         </tbody>
         `
@@ -47,7 +48,7 @@ const create = () => {
     }
         
     // desc preset
-    const desc = `Kegiatan ${id +1}`
+    const desc = `${namePreset} ${id +1}`
     // store entry
     const newEntry = {
         id: id,
@@ -70,8 +71,6 @@ const create = () => {
         </tr>
     </tbody>
     `
-
-    // tabulateData(storageArray);
 }
 
 const read = () => {
@@ -127,8 +126,6 @@ const update = (i) => {
 
         // reenable the edit button
         document.getElementById(`update-btn-${i}`).disabled = false;
-
-        // tabulateData(storageArray);
     }
 }
 
@@ -147,28 +144,4 @@ const deleteEntry = i => {
         // remove the said data
         document.getElementById(`row-${i}`).parentNode.remove();
     }
-
-    // update the display
-    // tabulateData(storageArray);
 }
-
-const testing = () => {
-    let objArr = [
-        {
-            id: 1,
-            desc: "One"
-        },
-        {
-            id: 2,
-            desc: "Two"
-        },
-    ]
-    for (let i = 0; i < objArr.map(el => el.id).length; i++) {
-        console.log(objArr[i].id)
-    }
-}
-
-// const clearLocalStorage = () => {
-//     localStorage.clear();
-//     console.log('localStorage cleared!, refresh page to take effect');
-// }
