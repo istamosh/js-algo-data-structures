@@ -1,5 +1,5 @@
-const currentDateParagraph = document.getElementById('current-date');
-const dateOptionsSelectElement = document.getElementById('date-options');
+const currentDateParagraph = document.getElementById("current-date");
+const dateOptionsSelectElement = document.getElementById("date-options");
 
 // built-in Date constructors that create objects. A constructor is like a regular function, but starts with a capital letter, and is initialized with the new operator.
 const date = new Date();
@@ -8,7 +8,7 @@ const date = new Date();
 const day = date.getDate();
 
 // returns a number between 0 and 11. This represents the month for the date provided, where 0 is January and 11 is December
-const month = date.getMonth() +1;
+const month = date.getMonth() + 1;
 
 // returns a number which represents the year for the provided date.
 const year = date.getFullYear();
@@ -23,6 +23,10 @@ const minutes = date.getMinutes();
 // followed by another embedded expression that contains the year variable.
 const formattedDate = `${day}-${month}-${year}`;
 
+// example, display string effect with split function
+// const exampleSentence = "selur pmaCedoCeerf".split("").reverse().join("");
+// console.log(exampleSentence);
+
 // set its text content to the value of the formattedDate variable.
 currentDateParagraph.textContent = formattedDate;
 
@@ -34,15 +38,18 @@ currentDateParagraph.textContent = formattedDate;
 // the .join() method to join the reversed array elements into a string and use a "-" for the separator
 // The break statement will tell the JavaScript interpreter to stop executing statements. Without adding a break statement at the end of each case block, the program will execute the code for all matching cases
 // the default case is executed when none of the previous case conditions match the value being evaluated. It serves as a catch-all for any other possible cases.
-dateOptionsSelectElement.addEventListener('change', () => {
-    switch (dateOptionsSelectElement.value) {
-        case 'yyyy-mm-dd':
-            currentDateParagraph.textContent = formattedDate.split('-').reverse().join('-');
-            break;
-        case 'mm-dd-yyyy-h-mm':
-            currentDateParagraph.textContent = `${month}-${day}-${year} ${hours} Hours ${minutes} Minutes`;
-            break;
-        default:
-            currentDateParagraph.textContent = formattedDate;
-    }
+dateOptionsSelectElement.addEventListener("change", () => {
+  switch (dateOptionsSelectElement.value) {
+    case "yyyy-mm-dd":
+      currentDateParagraph.textContent = formattedDate
+        .split("-")
+        .reverse()
+        .join("-");
+      break;
+    case "mm-dd-yyyy-h-mm":
+      currentDateParagraph.textContent = `${month}-${day}-${year} ${hours} Hours ${minutes} Minutes`;
+      break;
+    default:
+      currentDateParagraph.textContent = formattedDate;
+  }
 });
