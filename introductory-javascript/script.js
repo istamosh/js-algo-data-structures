@@ -1,8 +1,8 @@
-const character = "#";
-const count = 8;
+const character = "!";
+const count = 10;
 const rows = [];
-// dynamically access last element
-// rows[rows.length -1] = 10;
+
+let inverted = false;
 
 function padRow(rowNumber, rowCount) {
   return (
@@ -12,9 +12,38 @@ function padRow(rowNumber, rowCount) {
   );
 }
 
-for (let i = 0; i < count; i++) {
-  rows.push(padRow(i + 1, count));
+// change the code to a different kind of loop
+for (let i = 1; i <= count; i++) {
+  if (inverted) {
+    rows.unshift(padRow(i, count));
+  } else {
+    rows.push(padRow(i, count));
+  }
 }
+
+// dynamically access last element
+// rows[rows.length -1] = 10;
+
+// most of the values in javascript is truthy
+// falsy values are false, 0, "", null, undefined, NaN
+/* if ("") {
+  console.log("Condition is true");
+} */
+
+/* while (rows.length < count) {
+  rows.push(padRow(rows.length + 1, count));
+} */
+
+/* for (let i = count; i > 0; i--) {
+  rows.push(padRow(i, count));
+} */
+
+/* const numbers = [1, 2, 3];
+const shifted = numbers.shift();
+const unshifted = numbers.unshift(5);
+console.log(shifted);
+console.log(unshifted);
+console.log(numbers); */
 
 let result = "";
 
